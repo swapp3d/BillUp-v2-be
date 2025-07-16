@@ -1,5 +1,12 @@
 package com.example.BillUp.entities;
 
+import com.example.BillUp.enums.Role;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import com.example.BillUp.enumerators.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -10,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+
 
 @Entity
 @Getter
@@ -24,6 +32,10 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  
+    @Enumerated(EnumType.STRING)
+    private Role role;
+  
 
     @Column(nullable = false)
     private String name;
@@ -38,6 +50,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    private String password;
+
 
     @Column(nullable = false)
     private String passwordHash;
