@@ -1,9 +1,7 @@
 package com.example.BillUp.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.BillUp.enums.Role;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +16,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private String name;
     private String surname;
     //address attribute will be replaced by list of residences (new entity)
     private String email;
     private String phoneNumber;
     private String password;
-    private String balance;
 }
