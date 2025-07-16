@@ -11,6 +11,7 @@ public interface ResidenceRepository extends JpaRepository<Residence, Long> {
 
     List<Residence> findByUserId(Long userId);
 
-    @Query("SELECT r FROM Residence r WHERE LOWER(r.address) LIKE LOWER(CONCAT(:query, '%'))")
+    @Query("SELECT r FROM Residence r WHERE LOWER(r.streetAddress) LIKE LOWER(CONCAT(:query, '%'))")
     List<Residence> searchByAddress(@Param("query") String query);
+
 }

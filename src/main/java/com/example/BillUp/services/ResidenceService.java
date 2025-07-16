@@ -21,18 +21,13 @@ public class ResidenceService {
     private final ResidenceRepository residenceRepository;
     private final UserRepository userRepository;
 
-    public YourClassName(ResidenceRepository residenceRepository, UserRepository userRepository) {
+    public ResidenceService(ResidenceRepository residenceRepository, UserRepository userRepository) {
         this.residenceRepository = residenceRepository;
         this.userRepository = userRepository;
     }
 
-    public ResidenceService(ResidenceRepository residenceRepository) {
-        this.residenceRepository = residenceRepository;
-    }
-
-
-    public List<ResidenceResponse> getUserResidences(String username) {
-        User user = userRepository.findByUsername(username)
+    public List<ResidenceResponse> getUserResidences(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return residenceRepository.findByUserId(user.getId()).stream()
@@ -40,13 +35,14 @@ public class ResidenceService {
                 .collect(Collectors.toList());
     }
 
-    public ResidenceResponse registerResidence(String username, CreateResidenceRequest request) {
-        User user = userRepository.findByUsername(username)
+    public ResidenceResponse registerResidence(String email, CreateResidenceRequest request) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Residence res = new Residence();
         res.setUser(user);
-        res.setAddress(request.getAddress());
+        res.setStreetAddress(request.getStreetAddress());
+        res.setFlatNumber(request.getFlatNumber());
         res.setCity(request.getCity());
         res.setPostalCode(request.getPostalCode());
         res.setCountry(request.getCountry());
@@ -69,6 +65,20 @@ public class ResidenceService {
         residenceRepository.save(res);
     }
 
+    public void setPrimaryResidence(Long residenceId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<Residence> residences = residenceRepository.findByUserId(user.getId());
+
+        for (Residence residence : residences) {
+            residence.setPrimary(residence.getId().equals(residenceId));
+        }
+
+        residenceRepository.saveAll(residences);
+    }
+
+
     public List<ResidenceResponse> autocompleteAddress(String query) {
         return residenceRepository.searchByAddress(query)
                 .stream().map(this::toDto).collect(Collectors.toList());
@@ -77,12 +87,23 @@ public class ResidenceService {
     private ResidenceResponse toDto(Residence res) {
         ResidenceResponse dto = new ResidenceResponse();
         dto.setId(res.getId());
-        dto.setAddress(res.getAddress());
+        dto.setStreetAddress(res.getStreetAddress());
+        dto.setFlatNumber(res.getFlatNumber());
         dto.setCity(res.getCity());
+        dto.setPostalCode(res.getPostalCode());
         dto.setCountry(res.getCountry());
+        dto.setResidenceType(res.getResidenceType());
         dto.setPrimary(res.isPrimary());
         dto.setActive(res.isActive());
+
+        String fullAddress = res.getStreetAddress();
+        if (res.getFlatNumber() != null && !res.getFlatNumber().isEmpty()) {
+            fullAddress += ", Apt " + res.getFlatNumber();
+        }
+        dto.setFullAddress(fullAddress);
+
         return dto;
     }
+
 }
 

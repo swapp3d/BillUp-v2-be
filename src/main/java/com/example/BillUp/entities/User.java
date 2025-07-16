@@ -7,13 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,7 +41,18 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String surname;
-    //address attribute will be replaced by list of residences (new entity)
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Residence> residences = new ArrayList<>();
+
+    public String getPrimaryAddress() {
+        return residences.stream()
+                .filter(Residence::isPrimary)
+                .findFirst()
+                .map(Residence::getFullAddress)
+                .orElse("No primary residence");
+    }
+
 
     @Column(nullable = false, unique = true)
     @Email(message = "Invalid email!")

@@ -14,10 +14,19 @@ public class Residence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String address;
+    private String streetAddress;
+    private String flatNumber;
     private String city;
     private String postalCode;
     private String country;
+
+    public String getFullAddress() {
+        if (flatNumber != null && !flatNumber.isBlank()) {
+            return "Flat " + flatNumber + ", " + streetAddress + ", " + city + ", " + postalCode + ", " + country;
+        }
+        return streetAddress + ", " + city + ", " + postalCode + ", " + country;
+    }
+
 
     private String residenceType; //house or flat
     private boolean isPrimary = false; //for prioritization of multiple residences

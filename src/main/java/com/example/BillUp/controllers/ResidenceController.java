@@ -32,6 +32,13 @@ public class ResidenceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
+    @PutMapping("/{id}/set-primary")
+    public ResponseEntity<?> setPrimary(@PathVariable Long id, Principal principal) {
+        residenceService.setPrimaryResidence(id, principal.getName());
+        return ResponseEntity.ok("Primary residence updated.");
+    }
+
+
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<?> deactivateResidence(@PathVariable Long id, Principal principal) {
         residenceService.deactivateResidence(id, principal.getName());
