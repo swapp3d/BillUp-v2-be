@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class BillRequestDTO {
+    private String name;
     private Double amount;
     private LocalDate dueDate;
     private BillType type;

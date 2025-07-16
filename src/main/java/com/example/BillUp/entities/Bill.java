@@ -9,9 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,10 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "bills")
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -43,7 +42,10 @@ public class Bill {
     private Double amount;
 
     @Column(nullable = false)
-    private LocalDate due_date;
+    private LocalDate dueDate;
+
+    @Column(nullable = false)
+    private LocalDate issueDate;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -53,23 +55,41 @@ public class Bill {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "bill")
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
     private List<Payment> payments;
 
-    @OneToMany(mappedBy = "bill")
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
     @PrePersist
+    public void onPrePersist() {
+        if (issueDate == null) {
+            issueDate = LocalDate.now();
+        }
+        if (status == null) {
+            status = BillStatus.OPEN;
+        }
+        updatePriorityAndStatus();
+    }
+
     @PreUpdate
-    public void updatePriorityAndStatus() {
+    public void onPreUpdate() {
+        updatePriorityAndStatus();
+    }
+
+    private void updatePriorityAndStatus() {
         LocalDate today = LocalDate.now();
 
-        // Assign priority
-        if (due_date != null) {
-            long daysLeft = today.until(due_date).getDays();
+        if (dueDate != null) {
+            long daysLeft = today.until(dueDate).getDays();
 
-            if (daysLeft < 0) {
+            // Update status based on due date
+            if (daysLeft < 0 && status != BillStatus.PAID) {
                 status = BillStatus.OVERDUE;
+            }
+
+            // Update priority based on days left
+            if (daysLeft < 0) {
                 priority = BillPriority.HIGH;
             } else if (daysLeft <= 3) {
                 priority = BillPriority.HIGH;
@@ -79,11 +99,23 @@ public class Bill {
                 priority = BillPriority.LOW;
             }
 
-            // Default to OPEN if not overdue and not paid/failed yet
-            if (status == null || status == BillStatus.OPEN) {
+            // Keep OPEN status if not overdue and not paid/failed
+            if (status != BillStatus.PAID && status != BillStatus.FAILED && daysLeft >= 0) {
                 status = BillStatus.OPEN;
             }
         }
     }
 
+    public Double getTotalPaid() {
+        return payments != null ?
+                payments.stream().mapToDouble(Payment::getAmount).sum() : 0.0;
+    }
+
+    public Double getRemainingAmount() {
+        return amount - getTotalPaid();
+    }
+
+    public boolean isFullyPaid() {
+        return getTotalPaid() >= amount;
+    }
 }
