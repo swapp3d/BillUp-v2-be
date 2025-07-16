@@ -1,28 +1,64 @@
 package com.example.BillUp.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.BillUp.enumerators.Role;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String surname;
     //address attribute will be replaced by list of residences (new entity)
+
+    @Column(nullable = false, unique = true)
+    @Email(message = "Invalid email!")
     private String email;
+
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
-    private String password;
-    private String balance;
+
+    @Column(nullable = false)
+    private String passwordHash;
+
+    private Double balance;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 }
