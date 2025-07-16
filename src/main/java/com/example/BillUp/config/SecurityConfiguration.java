@@ -1,5 +1,6 @@
 package com.example.BillUp.config;
 
+import com.example.BillUp.config.jwt.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,7 +22,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthFilter jwtAuthFilter;
 
     private final FilterChainExceptionHandler filterChainExceptionHandler;
 
@@ -33,13 +34,13 @@ public class SecurityConfiguration {
 
     private final LogoutHandler logoutHandler;
 
-    public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
+    public SecurityConfiguration(JwtAuthFilter jwtAuthFilter,
                                  FilterChainExceptionHandler filterChainExceptionHandler,
                                  AuthenticationProvider authenticationProvider,
                                  LogoutHandler logoutHandler,
                                  CustomAccessDeniedHandler customAccessDeniedHandler,
                                  CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.jwtAuthFilter = jwtAuthFilter;
         this.filterChainExceptionHandler = filterChainExceptionHandler;
         this.authenticationProvider = authenticationProvider;
         this.logoutHandler = logoutHandler;
@@ -62,7 +63,7 @@ public class SecurityConfiguration {
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout").

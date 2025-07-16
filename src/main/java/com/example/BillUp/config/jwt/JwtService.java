@@ -1,4 +1,4 @@
-package com.example.BillUp.security;
+package com.example.BillUp.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
