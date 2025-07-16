@@ -5,6 +5,7 @@ import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.repositories.ResidenceRepository;
+import com.example.BillUp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
