@@ -1,12 +1,11 @@
 package com.example.BillUp.services;
 
-import com.example.BillUp.dto.CreateResidenceRequest;
-import com.example.BillUp.dto.ResidenceResponse;
+import com.example.BillUp.dto.residence.CreateResidenceRequest;
+import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.repositories.ResidenceRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,11 +17,18 @@ import java.util.stream.Collectors;
 @Service
 public class ResidenceService {
 
-    @Autowired
-    private ResidenceRepository residenceRepository;
+    private final ResidenceRepository residenceRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository; //will be created
+    public YourClassName(ResidenceRepository residenceRepository, UserRepository userRepository) {
+        this.residenceRepository = residenceRepository;
+        this.userRepository = userRepository;
+    }
+
+    public ResidenceService(ResidenceRepository residenceRepository) {
+        this.residenceRepository = residenceRepository;
+    }
+
 
     public List<ResidenceResponse> getUserResidences(String username) {
         User user = userRepository.findByUsername(username)

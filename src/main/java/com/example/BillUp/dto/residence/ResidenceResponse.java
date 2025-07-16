@@ -1,4 +1,4 @@
-package com.example.BillUp.dto;
+package com.example.BillUp.dto.residence;
 
 import lombok.Data;
 

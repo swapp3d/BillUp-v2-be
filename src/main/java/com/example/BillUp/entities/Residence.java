@@ -20,7 +20,7 @@ public class Residence {
     private String country;
 
     private String residenceType; //house or flat
-    private boolean isPrimary = false;
+    private boolean isPrimary = false; //for prioritization of multiple residences
     private boolean active = true; //for residence deactivation
 
     @ManyToOne(fetch = FetchType.LAZY)
