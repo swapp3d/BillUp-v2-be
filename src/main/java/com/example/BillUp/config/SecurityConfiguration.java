@@ -1,6 +1,7 @@
 package com.example.BillUp.config;
 
 import com.example.BillUp.config.jwt.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -20,33 +23,20 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    private final FilterChainExceptionHandler filterChainExceptionHandler;
-
-    private final AuthenticationProvider authenticationProvider;
-
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
-
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    private final LogoutHandler logoutHandler;
-
-    public SecurityConfiguration(JwtAuthFilter jwtAuthFilter,
-                                 FilterChainExceptionHandler filterChainExceptionHandler,
-                                 AuthenticationProvider authenticationProvider,
-                                 LogoutHandler logoutHandler,
-                                 CustomAccessDeniedHandler customAccessDeniedHandler,
-                                 CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.filterChainExceptionHandler = filterChainExceptionHandler;
-        this.authenticationProvider = authenticationProvider;
-        this.logoutHandler = logoutHandler;
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
-    }
+//    private final FilterChainExceptionHandler filterChainExceptionHandler;
+//
+//    private final AuthenticationProvider authenticationProvider;
+//
+//    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+//
+//    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+//
+//    private final LogoutHandler logoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -58,21 +48,26 @@ public class SecurityConfiguration {
                 )
                 .cors(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                )
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
-                .logout(logout ->
-                        logout.logoutUrl("/api/v1/auth/logout").
-                                addLogoutHandler(logoutHandler).
-                                logoutSuccessHandler((request, response, authentication) ->
-                                        SecurityContextHolder.clearContext()
-                                ));
+//                .exceptionHandling(ex -> ex
+//                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+//                        .accessDeniedHandler(customAccessDeniedHandler)
+//                )
+//                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
+//                .logout(logout ->
+//                        logout.logoutUrl("/api/v1/auth/logout").
+//                                addLogoutHandler(logoutHandler).
+//                                logoutSuccessHandler((request, response, authentication) ->
+//                                        SecurityContextHolder.clearContext()
+//                                ));
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     private final String[] permittedEndpoints = {

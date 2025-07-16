@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,5 +49,8 @@ public class Bill {
 
     @OneToMany(mappedBy = "bill")
     private List<Notification> notifications;
+
+    @ManyToOne
+    private Company company;
 
 }

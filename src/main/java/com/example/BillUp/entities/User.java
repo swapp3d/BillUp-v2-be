@@ -21,8 +21,8 @@ import java.util.List;
 @Setter
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
 
@@ -47,12 +47,10 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    private String password;
-
     @Column(nullable = false)
     private String passwordHash;
 
-    private Double balance;
+    private Double balance = 0.0;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
