@@ -71,6 +71,10 @@ public class JwtService {
         return extractClaim(token, claims -> claims.get("user_id", Long.class));
     }
 
+    public boolean isRevoked(String token) {
+        return extractClaim(token, claims -> claims.get("revoked", Boolean.class));
+    }
+
     public boolean isUserAdmin(String token) {
         @SuppressWarnings("unchecked")
         List<String> roles = extractClaim(token, claims -> (List<String>) claims.get("roles"));
