@@ -1,4 +1,4 @@
-package com.example.BillUp.repository;
+package com.example.BillUp.repositories;
 
 import com.example.BillUp.entities.Residence;
 import org.springframework.data.jpa.repository.JpaRepository;

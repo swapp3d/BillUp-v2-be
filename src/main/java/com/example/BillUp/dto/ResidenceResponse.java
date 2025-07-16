@@ -1,5 +1,8 @@
 package com.example.BillUp.dto;
 
+import lombok.Data;
+
+@Data
 public class ResidenceResponse {
     private Long id;
     private String address;

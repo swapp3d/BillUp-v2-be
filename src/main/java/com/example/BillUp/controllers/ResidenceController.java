@@ -1,8 +1,8 @@
-package com.example.BillUp.controller;
+package com.example.BillUp.controllers;
 
 import com.example.BillUp.dto.CreateResidenceRequest;
 import com.example.BillUp.dto.ResidenceResponse;
-import com.example.BillUp.service.ResidenceService;
+import com.example.BillUp.services.ResidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
