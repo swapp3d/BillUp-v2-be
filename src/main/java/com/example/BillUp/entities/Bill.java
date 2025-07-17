@@ -54,9 +54,4 @@ public class Bill {
 
     @OneToMany(mappedBy = "bill")
     private List<Notification> notifications;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-
 }
