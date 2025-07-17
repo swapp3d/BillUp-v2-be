@@ -46,7 +46,7 @@ public class ResidenceController {
     }
 
     @GetMapping("/autocomplete")
-    public List<ResidenceResponse> autocomplete(@RequestParam String query) {
+    public List<ResidenceResponse> autocompleteAddress(@RequestParam String query) {
         return residenceService.autocompleteAddress(query);
     }
 }

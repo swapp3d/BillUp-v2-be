@@ -1,5 +1,6 @@
 package com.example.BillUp.services;
 
+import com.example.BillUp.dto.residence.AddressSuggestion;
 import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.entities.Residence;
@@ -38,6 +39,15 @@ public class ResidenceService {
     public ResidenceResponse registerResidence(String email, CreateResidenceRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+//        boolean isValid = validateAddress(
+//                request.getStreetAddress(),
+//                request.getCity(),
+//                request.getCountry()
+//        );
+//        if (!isValid) {
+//            throw new IllegalArgumentException("Provided address is invalid");
+//        }
 
         Residence res = new Residence();
         res.setUser(user);
@@ -83,6 +93,12 @@ public class ResidenceService {
         return residenceRepository.searchByAddress(query)
                 .stream().map(this::toDto).collect(Collectors.toList());
     }
+
+//    public boolean validateAddress(String street, String city, String country) {
+//        List<AddressSuggestion> suggestions = autocompleteAddress(street + ", " + city + ", " + country);
+//        return !suggestions.isEmpty();
+//    }
+
 
     private ResidenceResponse toDto(Residence res) {
         ResidenceResponse dto = new ResidenceResponse();
