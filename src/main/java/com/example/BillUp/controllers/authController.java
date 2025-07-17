@@ -20,7 +20,9 @@ public class authController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO registerRequest) {
+        System.out.println("inside register endpoint");
         authService.register(registerRequest);
+        System.out.println("everything done");
         return ResponseEntity.ok("success");
     }
 
