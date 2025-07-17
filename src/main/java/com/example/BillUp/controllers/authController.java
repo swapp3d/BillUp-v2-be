@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -19,11 +21,24 @@ public class authController {
     private final JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequestDTO registerRequest) {
-        System.out.println("inside register endpoint");
-        authService.register(registerRequest);
-        System.out.println("everything done");
-        return ResponseEntity.ok("success");
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
+        try {
+            User user = authService.register(request);
+
+            RegisterResponseDTO response = new RegisterResponseDTO(
+                    user.getId(),
+                    user.getName(),
+                    user.getSurname(),
+                    user.getEmail(),
+                    user.getPhoneNumber()
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body( Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/login")

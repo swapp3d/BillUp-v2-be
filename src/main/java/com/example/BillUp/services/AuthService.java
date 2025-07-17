@@ -11,6 +11,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -18,13 +20,17 @@ public class AuthService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
 
-    public void register(RegisterRequestDTO request) {
-        System.out.println("inside register service");
+    public User register(RegisterRequestDTO request) {
+        System.out.println("inside the register service");
+        if (userRepository.existsByEmail(request.getEmail())) {
+            System.out.println("inside of the already exists exception");
+            throw new IllegalArgumentException("User already exists");
+        }
+
         if (request.getRole() == Role.CLIENT && request.getSurname().isBlank()) {
-            System.out.println("checking the role CLIENT");
+            System.out.println("inside the surname exception");
             throw new IllegalArgumentException("Surname is required for CLIENT role");
         }
-        System.out.println("creating user");
         User user = User.builder()
                 .role(request.getRole())
                 .name(request.getName())
@@ -34,21 +40,21 @@ public class AuthService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .balance(0.0)
                 .build();
-
         System.out.println("saving user");
+
         userRepository.save(user);
 
         if (request.getRole() == Role.COMPANY) {
-            System.out.println("creating company");
             Company company = Company.builder()
                     .name(request.getName())
                     .companyEmail(request.getEmail())
                     .companyNumber(request.getPhoneNumber())
                     .user(user)
                     .build();
-            System.out.println("saving company");
             companyRepository.save(company);
         }
+
+        return user;
     }
 
     public User login(String email, String rawPassword) {
