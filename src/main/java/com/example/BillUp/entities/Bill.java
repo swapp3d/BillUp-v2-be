@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "bills")
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,11 +48,10 @@ public class Bill {
     @OneToMany(mappedBy = "bill")
     private List<Payment> payments;
 
-    @OneToMany(mappedBy = "bill")
-    private List<Notification> notifications;
-
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @OneToMany(mappedBy = "bill")
+    private List<Notification> notifications;
 }

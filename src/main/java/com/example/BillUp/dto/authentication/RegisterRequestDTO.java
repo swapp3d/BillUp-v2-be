@@ -1,35 +1,36 @@
 package com.example.BillUp.dto.authentication;
 
 import com.example.BillUp.enumerators.Role;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequestDTO {
 
-    @NotNull(message = "Role is required")
+    @NotEmpty(message = "role is required")
     private Role role;
 
-    @NotBlank(message = "Name is required")
+    @NotEmpty(message = "name is required!")
     private String name;
 
-    //validation in authService
+    //in serviceAuth
     private String surname;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotEmpty(message = "email is required!")
     private String email;
 
-    @NotBlank(message = "Phone number is required")
-    private String phoneNumber;
-
-    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit!")
     private String password;
 
+    @NotEmpty(message = "phone number is required!")
+    private String phoneNumber;
 }
