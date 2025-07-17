@@ -29,6 +29,10 @@ public class Company {
     @Column(nullable = false)
     private String companyNumber;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
+
     @OneToMany(mappedBy = "company")
     private List<Bill> bills;
 }

@@ -1,13 +1,11 @@
 package com.example.BillUp.entities;
 
-import com.example.BillUp.enums.Role;
+import com.example.BillUp.enumerators.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,24 +21,23 @@ import java.util.List;
 @Setter
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  
+
     @Enumerated(EnumType.STRING)
     private Role role;
-  
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String surname;
+    @Column()
+    private String surname; //handling in authService
     //address attribute will be replaced by list of residences (new entity)
 
     @Column(nullable = false, unique = true)
@@ -50,13 +47,13 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    private String password;
-
-
     @Column(nullable = false)
     private String passwordHash;
 
     private Double balance;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Company company;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
