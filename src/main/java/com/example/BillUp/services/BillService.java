@@ -32,7 +32,7 @@ public class BillService {
 
     @Transactional
     public Bill createBill(BillRequestDTO dto) {
-        Company company = companyRepository.findById(dto.getCompanyId())
+        Company company = companyRepository.findById(Math.toIntExact(dto.getCompanyId()))
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
         User user = userRepository.findById(Math.toIntExact(dto.getUserId()))
