@@ -1,5 +1,6 @@
 package com.example.BillUp.config.jwt;
 
+import com.example.BillUp.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,15 +16,17 @@ import java.util.function.Function;
 public class JwtService {
     private final String SECRET_KEY;
     private final long EXPIRATION_MS;
+    private final long REFRESH_EXPIRATION_MS;
 
     public JwtService(@Value("${auth.jwt.secret.key}") String secretKey,
-                      @Value("${auth.jwt.expiration-ms}") long expirationMs) {
+                      @Value("${auth.jwt.expiration-ms}") long expirationMs,
+                      @Value("${auth.jwt.refresh-expiration-ms}") long refreshExpirationMs) {
         this.SECRET_KEY = secretKey;
         this.EXPIRATION_MS = expirationMs;
+        this.REFRESH_EXPIRATION_MS = refreshExpirationMs;
     }
 
     public String generateToken(String email) {
-        System.out.println("generating token");
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
@@ -32,16 +35,30 @@ public class JwtService {
                 .compact();
     }
 
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_MS))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     private Key getSignInKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token, User user) {
         try {
-            return !extractAllClaims(token).getExpiration().before(new Date());
+            String email = extractEmail(token);
+            return email.equals(user.getEmail()) && !isExpired(token);
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean isExpired(String token) {
+        return extractAllClaims(token).getExpiration().before(new Date());
     }
 
     public String extractEmail(String token) {

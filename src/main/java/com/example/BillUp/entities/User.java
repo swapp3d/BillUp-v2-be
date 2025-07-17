@@ -1,6 +1,6 @@
 package com.example.BillUp.entities;
 
-import com.example.BillUp.enums.Role;
+import com.example.BillUp.enumerators.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,8 +36,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String surname;
+    @Column()
+    private String surname; //handling in authService
     //address attribute will be replaced by list of residences (new entity)
 
     @Column(nullable = false, unique = true)
@@ -50,7 +50,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String passwordHash;
 
-    private Double balance = 0.0;
+    private Double balance;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

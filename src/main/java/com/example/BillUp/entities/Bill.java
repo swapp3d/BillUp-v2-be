@@ -51,6 +51,7 @@ public class Bill {
     private List<Notification> notifications;
 
     @ManyToOne
+    @JoinColumn(name = "company_id")
     private Company company;
 
 }
