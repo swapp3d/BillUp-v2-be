@@ -65,11 +65,6 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     private final String[] permittedEndpoints = {
             "/api/v1/auth/**",
             "/api/v1/planets/**",

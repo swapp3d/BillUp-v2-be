@@ -23,6 +23,7 @@ public class JwtService {
     }
 
     public String generateToken(String email) {
+        System.out.println("generating token");
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
