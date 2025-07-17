@@ -1,16 +1,26 @@
 package com.example.BillUp.dto.authentication;
 
+import com.example.BillUp.enumerators.Role;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequestDTO {
+
+    @NotEmpty(message = "role is required")
+    private Role role;
 
     @NotEmpty(message = "name is required!")
     private String name;
 
-    @NotEmpty(message = "surname is required!")
+    //in serviceAuth
     private String surname;
 
     @NotEmpty(message = "email is required!")

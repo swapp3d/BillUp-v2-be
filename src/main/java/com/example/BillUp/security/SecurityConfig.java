@@ -1,4 +1,4 @@
-package com.example.BillUp.security;
+/*package com.example.BillUp.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -32,3 +32,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+*/
