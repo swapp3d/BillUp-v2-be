@@ -76,11 +76,5 @@ public class SecurityConfiguration {
 
     private final String[] permittedEndpoints = {
             "/api/v1/auth/**",
-            "/api/v1/planets/**",
-            "/api/v1/applications/**",
-            "/api/v1/user/**",
-            "/api/v1/jobs/**",
-            "/api/v1/hiring/**",
-            "/api/v1/products/**",
     };
 }
