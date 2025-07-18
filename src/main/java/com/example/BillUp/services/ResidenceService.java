@@ -5,6 +5,7 @@ import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
+import com.example.BillUp.enumerators.ResidenceType;
 import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -56,7 +57,7 @@ public class ResidenceService {
         res.setCity(request.getCity());
         res.setPostalCode(request.getPostalCode());
         res.setCountry(request.getCountry());
-        res.setResidenceType(request.getResidenceType());
+        res.setResidenceType(ResidenceType.valueOf(request.getResidenceType()));
         res.setPrimary(request.isPrimary());
 
         Residence saved = residenceRepository.save(res);
@@ -108,7 +109,7 @@ public class ResidenceService {
         dto.setCity(res.getCity());
         dto.setPostalCode(res.getPostalCode());
         dto.setCountry(res.getCountry());
-        dto.setResidenceType(res.getResidenceType());
+        dto.setResidenceType(String.valueOf(res.getResidenceType()));
         dto.setPrimary(res.isPrimary());
         dto.setActive(res.isActive());
 

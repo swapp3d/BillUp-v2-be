@@ -1,5 +1,6 @@
 package com.example.BillUp.dto.authentication;
 
+import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.enumerators.Role;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -33,4 +34,6 @@ public class RegisterRequestDTO {
 
     @NotEmpty(message = "phone number is required!")
     private String phoneNumber;
+
+    private CreateResidenceRequest residenceRequest;
 }
