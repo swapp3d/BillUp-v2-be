@@ -14,4 +14,5 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
     @Query("SELECT t from Token t WHERE t.user.id = :userId AND t.revoked = false ")
     List<Token> findAllValidTokensOfUser(Long userId);
+
 }

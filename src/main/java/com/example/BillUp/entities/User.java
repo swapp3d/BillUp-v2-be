@@ -1,3 +1,4 @@
+
 package com.example.BillUp.entities;
 
 import com.example.BillUp.enumerators.Role;
@@ -12,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,7 +40,18 @@ public class User implements UserDetails {
 
     @Column()
     private String surname; //handling in authService
-    //address attribute will be replaced by list of residences (new entity)
+
+    //added residence
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Residence> residences = new ArrayList<>();
+
+    public String getPrimaryAddress() {
+        return residences.stream()
+                .filter(Residence::isPrimary)
+                .findFirst()
+                .map(Residence::getFullAddress)
+                .orElse("No primary residence");
+    }
 
     @Column(nullable = false, unique = true)
     @Email(message = "Invalid email!")
@@ -70,3 +83,6 @@ public class User implements UserDetails {
         return email;
     }
 }
+
+
+

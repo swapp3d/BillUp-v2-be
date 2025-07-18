@@ -33,3 +33,4 @@ public class Payment {
     @JoinColumn(name = "bill_id")
     private Bill bill;
 }
+
