@@ -4,6 +4,7 @@ import com.example.BillUp.dto.authentication.RegisterRequestDTO;
 import com.example.BillUp.entities.Company;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.Role;
+import com.example.BillUp.exceptions.EmailAlreadyExistsException;
 import com.example.BillUp.repositories.CompanyRepository;
 import com.example.BillUp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,7 @@ public class AuthService {
     public User register(RegisterRequestDTO request) {
         System.out.println("inside the register service");
         if (userRepository.existsByEmail(request.getEmail())) {
-            System.out.println("inside of the already exists exception");
-            throw new IllegalArgumentException("User already exists");
+            throw new EmailAlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }
 
         if (request.getRole() == Role.CLIENT && request.getSurname().isBlank()) {
