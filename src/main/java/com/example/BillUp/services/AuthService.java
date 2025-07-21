@@ -1,24 +1,33 @@
 package com.example.BillUp.services;
 
+import com.example.BillUp.config.jwt.JwtService;
+import com.example.BillUp.dto.authentication.LoginResponseDTO;
 import com.example.BillUp.dto.authentication.RegisterRequestDTO;
 import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.entities.Company;
 import com.example.BillUp.entities.Residence;
+import com.example.BillUp.entities.Token;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.ResidenceType;
 import com.example.BillUp.enumerators.Role;
+import com.example.BillUp.enumerators.TokenType;
 import com.example.BillUp.exceptions.EmailAlreadyExistsException;
+import com.example.BillUp.exceptions.UserNotFoundException;
 import com.example.BillUp.repositories.CompanyRepository;
 import com.example.BillUp.repositories.ResidenceRepository;
+import com.example.BillUp.repositories.TokenRepository;
 import com.example.BillUp.repositories.UserRepository;
-import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +36,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final ResidenceRepository residenceRepository;
+    private final TokenRepository tokenRepository;
+    private final JwtService jwtService;
 
     public User register(RegisterRequestDTO request) {
         System.out.println("inside the registration service");
@@ -100,5 +111,64 @@ public class AuthService {
             throw new BadCredentialsException("Wrong email or password");
         }
         return user;
+    }
+
+    public void refreshToken(User user, HttpServletResponse response) {
+        try {
+            Optional<Token> oldRefreshTokenOpt = tokenRepository.findByUserAndRevokedFalse(user);
+
+            if (oldRefreshTokenOpt.isEmpty()) {
+                System.out.println("refresh token not found");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            Token oldRefreshToken = oldRefreshTokenOpt.get();
+
+            if (!jwtService.isRefreshTokenValid(oldRefreshToken.getToken(), user)) {
+                System.out.println("refresh token is not valid");
+                oldRefreshToken.setRevoked(true);
+                tokenRepository.save(oldRefreshToken);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+
+                Map<String, String> errorResponse = Map.of(
+                        "message", "You need to login",
+                        "error", "Refresh token is invalid or expired"
+                );
+                new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
+                return;
+            }
+
+            System.out.println("refresh token is valid");
+            oldRefreshToken.setRevoked(true);
+            tokenRepository.save(oldRefreshToken);
+
+            String newAccessToken = jwtService.generateToken(user.getEmail());
+            String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
+
+            Token newRefreshTokenEntity = Token.builder()
+                    .token(newRefreshToken)
+                    .tokenType(TokenType.REFRESH)
+                    .expiryDate(jwtService.extractExpirationDate(newRefreshToken))
+                    .revoked(false)
+                    .user(user)
+                    .build();
+
+            tokenRepository.save(newRefreshTokenEntity);
+
+            LoginResponseDTO tokens = new LoginResponseDTO(newAccessToken, newRefreshToken);
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_OK);
+            new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        } catch (Exception e) {
+            try {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Token refresh failed " + e.getMessage());
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 }

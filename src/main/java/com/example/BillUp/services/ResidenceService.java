@@ -38,6 +38,7 @@ public class ResidenceService {
     }
 
     public ResidenceResponse registerResidence(String email, CreateResidenceRequest request) {
+        System.out.println("inside the residence service");
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -49,18 +50,30 @@ public class ResidenceService {
 //        if (!isValid) {
 //            throw new IllegalArgumentException("Provided address is invalid");
 //        }
+        System.out.println("creating residence");
 
         Residence res = new Residence();
+        System.out.println("residence created");
         res.setUser(user);
+        System.out.println("user is set");
         res.setStreetAddress(request.getStreetAddress());
+        System.out.println("streetaddrees is set");
         res.setFlatNumber(request.getFlatNumber());
+        System.out.println("flatnumber isset");
         res.setCity(request.getCity());
+        System.out.println("city isset");
         res.setPostalCode(request.getPostalCode());
+        System.out.println("postal code isset");
         res.setCountry(request.getCountry());
+        System.out.println("country isset");
         res.setResidenceType(ResidenceType.valueOf(request.getResidenceType()));
+        System.out.println("type isset");
         res.setPrimary(request.isPrimary());
+        System.out.println("primary isset");
+        System.out.println("residence is created");
 
         Residence saved = residenceRepository.save(res);
+        System.out.println("saving the residence" + res);
         return toDto(saved);
     }
 
@@ -102,6 +115,7 @@ public class ResidenceService {
 
 
     private ResidenceResponse toDto(Residence res) {
+        System.out.println("generating response");
         ResidenceResponse dto = new ResidenceResponse();
         dto.setId(res.getId());
         dto.setStreetAddress(res.getStreetAddress());
@@ -112,12 +126,14 @@ public class ResidenceService {
         dto.setResidenceType(String.valueOf(res.getResidenceType()));
         dto.setPrimary(res.isPrimary());
         dto.setActive(res.isActive());
+        System.out.println("response is set");
 
         String fullAddress = res.getStreetAddress();
         if (res.getFlatNumber() != null && !res.getFlatNumber().isEmpty()) {
             fullAddress += ", Apt " + res.getFlatNumber();
         }
         dto.setFullAddress(fullAddress);
+        System.out.println("full address is set");
 
         return dto;
     }

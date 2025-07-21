@@ -28,7 +28,9 @@ public class ResidenceController {
     public ResponseEntity<ResidenceResponse> registerResidence(
             @RequestBody CreateResidenceRequest request,
             Principal principal) {
+        System.out.println("inside the residence controller");
         ResidenceResponse res = residenceService.registerResidence(principal.getName(), request);
+        System.out.println("back to the controller");
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
