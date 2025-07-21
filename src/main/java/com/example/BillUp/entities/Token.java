@@ -33,7 +33,7 @@ public class Token {
     private TokenType tokenType;
 
     @Column(nullable = false)
-    private Date expiryDate;
+    private LocalDateTime expiryDate;
 
     @Column(nullable = false)
     private boolean revoked;
