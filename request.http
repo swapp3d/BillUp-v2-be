@@ -20,7 +20,9 @@ Content-Type: application/json
   "password": "123456"
 }
 
-
+### Address Autocomplete
+GET http://localhost:8080/api/address/autocomplete?q=Gedimino+9+Vilnius
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMwNzg5NzMsImV4cCI6MTc2MTcxODk3M30.zh_qTZJG-SDq_CRRj5oCF3iUxMHmmhzp5mcaVohy4o0
 
 
 
@@ -28,18 +30,37 @@ Content-Type: application/json
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTI3NzgzNjMsImV4cCI6MTc2MTQxODM2M30.NKb66I4V_4Xp5Mgw6AJ5rA-WZKQHz_Qmp7LOz0d8SSA
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMwNzg5NzMsImV4cCI6MTc2MTcxODk3M30.zh_qTZJG-SDq_CRRj5oCF3iUxMHmmhzp5mcaVohy4o0
 
 {
-  "streetAddress": "123 Main St",
-  "flatNumber": "4B",
+  "streetAddress": "Gedimino pr. 9",
+  "flatNumber": "19",
   "city": "Vilnius",
-  "postalCode": "LT-01100",
+  "postalCode": "LT-01103",
   "country": "Lithuania",
   "residenceType": "flat",
   "isPrimary": true,
   "active": true,
   "user": {
     "id": 1
+  }
+}
+
+### Create a new residence
+POST http://localhost:8080/api/residences
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMwNzg5NzMsImV4cCI6MTc2MTcxODk3M30.zh_qTZJG-SDq_CRRj5oCF3iUxMHmmhzp5mcaVohy4o0
+
+{
+  "streetAddress": "Antakalnio g. 12",
+  "flatNumber": "",
+  "city": "Vilnius",
+  "postalCode": "LT-10232",
+  "country": "Lithuania",
+  "residenceType": "house",
+  "isPrimary": false,
+  "active": true,
+  "user": {
+    "id": 2
   }
 }

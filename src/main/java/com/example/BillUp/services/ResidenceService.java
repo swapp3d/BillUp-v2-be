@@ -1,6 +1,5 @@
 package com.example.BillUp.services;
 
-import com.example.BillUp.dto.residence.AddressSuggestion;
 import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.entities.Residence;
@@ -8,23 +7,28 @@ import com.example.BillUp.entities.User;
 import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 public class ResidenceService {
 
     private final ResidenceRepository residenceRepository;
     private final UserRepository userRepository;
+    private final AddressService addressService;
 
-    public ResidenceService(ResidenceRepository residenceRepository, UserRepository userRepository) {
+    public ResidenceService(
+            ResidenceRepository residenceRepository,
+            UserRepository userRepository,
+            AddressService addressService
+    ) {
         this.residenceRepository = residenceRepository;
         this.userRepository = userRepository;
+        this.addressService = addressService;
     }
 
     public List<ResidenceResponse> getUserResidences(String email) {
@@ -40,14 +44,17 @@ public class ResidenceService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-//        boolean isValid = validateAddress(
-//                request.getStreetAddress(),
-//                request.getCity(),
-//                request.getCountry()
-//        );
-//        if (!isValid) {
-//            throw new IllegalArgumentException("Provided address is invalid");
-//        }
+        boolean isValid = addressService.validateAddress(
+                request.getStreetAddress(),
+                request.getFlatNumber() == null ? "" : request.getFlatNumber(),
+                request.getCity(),
+                request.getPostalCode(),
+                request.getCountry()
+        );
+
+        if (!isValid) {
+            throw new IllegalArgumentException("Provided address is invalid");
+        }
 
         Residence res = new Residence();
         res.setUser(user);
@@ -88,17 +95,10 @@ public class ResidenceService {
         residenceRepository.saveAll(residences);
     }
 
-
     public List<ResidenceResponse> autocompleteAddress(String query) {
         return residenceRepository.searchByAddress(query)
                 .stream().map(this::toDto).collect(Collectors.toList());
     }
-
-//    public boolean validateAddress(String street, String city, String country) {
-//        List<AddressSuggestion> suggestions = autocompleteAddress(street + ", " + city + ", " + country);
-//        return !suggestions.isEmpty();
-//    }
-
 
     private ResidenceResponse toDto(Residence res) {
         ResidenceResponse dto = new ResidenceResponse();
@@ -120,6 +120,4 @@ public class ResidenceService {
 
         return dto;
     }
-
 }
-
