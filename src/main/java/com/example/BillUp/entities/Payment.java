@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "payments")
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +24,19 @@ public class Payment {
     private Double amount;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime timestamp;
+
+    @Column(nullable = false)
+    private String provider; // CREDIT_CARD, GOOGLE_PAY, PAYPAL
+
+    @Column(nullable = false)
+    private String transactionId;
+
+    @Column(nullable = false)
+    private boolean success;
+
+    @Column
+    private String methodToken; // optional mock token
 
     @ManyToOne
     @JoinColumn(name = "user_id")

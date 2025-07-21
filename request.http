@@ -11,6 +11,18 @@ Content-Type: application/json
   "password": "123456"
 }
 
+### Register Company
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "role": "COMPANY",
+  "name": "Ignitis",
+  "surname": null,
+  "email": "ignitis@gmail.com",
+  "phoneNumber": "+37011"
+}
+
 ###Login
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
@@ -63,4 +75,31 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpY
   "user": {
     "id": 2
   }
+}
+
+### Create a new bill
+POST http://localhost:8080/api/bills
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxMTE4OTYsImV4cCI6MTc2MTc1MTg5Nn0.VFtEilG8InvV10bRv9XI503M4EeWN_W8yw6odScieYo
+
+{
+  "name": "Electricity",
+  "amount": 120.00,
+  "dueDate": "2025-07-30",
+  "companyId": 1,
+  "userId": 1,
+  "type": "UTILITY"
+}
+
+### Pay the bill
+POST http://localhost:8080/api/payments/process
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxMTE4OTYsImV4cCI6MTc2MTc1MTg5Nn0.VFtEilG8InvV10bRv9XI503M4EeWN_W8yw6odScieYo
+
+{
+  "billId": 1,
+  "userId": 1,
+  "amount": 120.00,
+  "provider": "PAYPAL",
+  "methodToken": "demo-mock-token-abc"
 }

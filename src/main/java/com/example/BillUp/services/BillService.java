@@ -3,21 +3,20 @@ package com.example.BillUp.services;
 import com.example.BillUp.dto.bill.BillRequestDTO;
 import com.example.BillUp.entities.Bill;
 import com.example.BillUp.entities.Company;
-import com.example.BillUp.entities.User;
 import com.example.BillUp.entities.Payment;
-import com.example.BillUp.enumerators.BillStatus;
+import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.BillPriority;
+import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
 import com.example.BillUp.repositories.BillRepository;
 import com.example.BillUp.repositories.CompanyRepository;
 import com.example.BillUp.repositories.UserRepository;
-import com.example.BillUp.repositories.PaymentRepository;
+import com.example.BillUp.services.PaymentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class BillService {
     private final BillRepository billRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
-    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     @Transactional
     public Bill createBill(BillRequestDTO dto) {
@@ -111,42 +110,8 @@ public class BillService {
     }
 
     @Transactional
-    public Payment payBill(Long billId, Long userId, Double amount) {
-        Bill bill = billRepository.findById(billId)
-                .orElseThrow(() -> new RuntimeException("Bill not found"));
-
-        User user = userRepository.findById(Math.toIntExact(userId))
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!bill.getUser().getId().equals(userId)) {
-            throw new RuntimeException("User is not authorized to pay this bill");
-        }
-
-        if (bill.getStatus() == BillStatus.PAID) {
-            throw new RuntimeException("Bill is already paid");
-        }
-
-        Double remainingAmount = bill.getRemainingAmount();
-        if (amount > remainingAmount) {
-            throw new RuntimeException("Payment amount exceeds remaining bill amount");
-        }
-
-        Payment payment = Payment.builder()
-                .amount(amount)
-                .date(LocalDateTime.now())
-                .user(user)
-                .bill(bill)
-                .build();
-
-        payment = paymentRepository.save(payment);
-
-        // Update bill status if fully paid
-        if (bill.isFullyPaid()) {
-            bill.setStatus(BillStatus.PAID);
-            billRepository.save(bill);
-        }
-
-        return payment;
+    public Payment payBill(Long billId, Long userId, Double amount, String provider, String methodToken) {
+        return paymentService.processBillPayment(billId, userId, amount, provider, methodToken);
     }
 
     @Transactional

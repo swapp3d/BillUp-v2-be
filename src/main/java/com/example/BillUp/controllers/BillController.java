@@ -120,10 +120,14 @@ public class BillController {
     }
 
     @PostMapping("/{billId}/pay")
-    public ResponseEntity<Payment> payBill(@PathVariable Long billId,
-                                           @RequestParam Long userId,
-                                           @RequestParam Double amount) {
-        Payment payment = billService.payBill(billId, userId, amount);
+    public ResponseEntity<Payment> payBill(
+            @PathVariable Long billId,
+            @RequestParam Long userId,
+            @RequestParam Double amount,
+            @RequestParam String provider,
+            @RequestParam String methodToken) {
+
+        Payment payment = billService.payBill(billId, userId, amount, provider, methodToken);
         return ResponseEntity.ok(payment);
     }
 
