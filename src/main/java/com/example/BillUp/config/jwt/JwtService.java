@@ -1,10 +1,7 @@
 package com.example.BillUp.config.jwt;
 
-import com.example.BillUp.dto.authentication.LoginResponseDTO;
 import com.example.BillUp.entities.Token;
 import com.example.BillUp.entities.User;
-import com.example.BillUp.enumerators.TokenType;
-import com.example.BillUp.exceptions.UserNotFoundException;
 import com.example.BillUp.repositories.TokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -56,16 +53,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public boolean isAccessTokenValid(String token, User user) {
-        try {
-            String email = extractEmail(token);
-            return email.equals(user.getEmail()) && !isExpired(token);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isRefreshTokenValid(String token, User user) {
+    public boolean isTokenValid(String token, User user) {
         try {
            String email = extractEmail(token);
            boolean matchesUsers = email.equals(user.getEmail());

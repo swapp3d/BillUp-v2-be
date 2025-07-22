@@ -47,6 +47,9 @@ public class Bill {
     @Column(nullable = false)
     private LocalDate issueDate;
 
+    @Column(nullable = false)
+    private String streetAddress;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
