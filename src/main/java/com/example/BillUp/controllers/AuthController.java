@@ -8,7 +8,9 @@ import com.example.BillUp.enumerators.TokenType;
 import com.example.BillUp.repositories.TokenRepository;
 import com.example.BillUp.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,10 +52,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
-//        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-//            //TODO
-//        }
-
         User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
         String accessToken = jwtService.generateToken(user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());

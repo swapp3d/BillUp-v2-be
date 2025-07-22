@@ -110,6 +110,9 @@ public class AuthService {
         if (user == null || !passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
             throw new BadCredentialsException("Wrong email or password");
         }
+        List<Token> tokens = tokenRepository.findAllByUserAndRevokedFalse(user);
+        tokens.forEach(token -> token.setRevoked(true));
+        tokenRepository.saveAll(tokens);
         return user;
     }
 
