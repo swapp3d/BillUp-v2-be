@@ -12,7 +12,6 @@ import com.example.BillUp.enumerators.ResidenceType;
 import com.example.BillUp.enumerators.Role;
 import com.example.BillUp.enumerators.TokenType;
 import com.example.BillUp.exceptions.EmailAlreadyExistsException;
-import com.example.BillUp.exceptions.UserNotFoundException;
 import com.example.BillUp.repositories.CompanyRepository;
 import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.TokenRepository;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -115,6 +115,7 @@ public class AuthService {
 
     public void refreshToken(User user, HttpServletResponse response) {
         try {
+            revokeAccessToken(user);
             Optional<Token> oldRefreshTokenOpt = tokenRepository.findByUserAndRevokedFalse(user);
 
             if (oldRefreshTokenOpt.isEmpty()) {
@@ -125,7 +126,7 @@ public class AuthService {
 
             Token oldRefreshToken = oldRefreshTokenOpt.get();
 
-            if (!jwtService.isRefreshTokenValid(oldRefreshToken.getToken(), user)) {
+            if (!jwtService.isTokenValid(oldRefreshToken.getToken(), user)) {
                 System.out.println("refresh token is not valid");
                 oldRefreshToken.setRevoked(true);
                 tokenRepository.save(oldRefreshToken);
@@ -146,6 +147,15 @@ public class AuthService {
 
             String newAccessToken = jwtService.generateToken(user.getEmail());
             String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
+
+            Token newAccessTokenEntity = Token.builder()
+                    .token(newAccessToken)
+                    .tokenType(TokenType.ACCESS)
+                    .expiryDate(jwtService.extractExpirationDate(newAccessToken))
+                    .revoked(false)
+                    .user(user)
+                    .build();
+            tokenRepository.save(newAccessTokenEntity);
 
             Token newRefreshTokenEntity = Token.builder()
                     .token(newRefreshToken)
@@ -171,4 +181,20 @@ public class AuthService {
             }
         }
     }
+
+    private void revokeAccessToken(User user) {
+        System.out.println("inside accessToken revoke");
+        List<Token> accessTokens = tokenRepository.findAllByUserAndRevokedFalseAndTokenType(user, TokenType.ACCESS);
+
+        for (Token token : accessTokens) {
+            token.setRevoked(true);
+            tokenRepository.save(token);
+            System.out.println("access token revoked: " + token.getToken());
+        }
+
+        if (accessTokens.isEmpty()) {
+            System.out.println("No active access tokens found");
+        }
+    }
+
 }

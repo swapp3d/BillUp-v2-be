@@ -9,10 +9,13 @@ import com.example.BillUp.repositories.TokenRepository;
 import com.example.BillUp.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.View;
+
 import java.util.Map;
 
 @RestController
@@ -22,6 +25,7 @@ public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
+    private final View error;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
@@ -45,12 +49,25 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
+//        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+//            //TODO
+//        }
+
         User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
         String accessToken = jwtService.generateToken(user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
-        Token tokenEntity = Token.builder()
+        Token accessTokenEntity = Token.builder()
+                .token(accessToken)
+                .tokenType(TokenType.ACCESS)
+                .expiryDate(jwtService.extractExpirationDate(accessToken))
+                .revoked(false)
+                .user(user)
+                .build();
+        tokenRepository.save(accessTokenEntity);
+
+        Token refreshTokenEntity = Token.builder()
                 .token(refreshToken)
                 .tokenType(TokenType.REFRESH)
                 .expiryDate(jwtService.extractExpirationDate(refreshToken))
@@ -58,8 +75,7 @@ public class AuthController {
                 .user(user)
                 .build();
 
-        tokenRepository.save(tokenEntity);
+        tokenRepository.save(refreshTokenEntity);
         return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken));
     }
-
 }

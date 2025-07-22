@@ -35,6 +35,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String servletPath = request.getServletPath();
+        System.out.println(servletPath);
+        System.out.println("Authentication before logout: " + SecurityContextHolder.getContext().getAuthentication());
+
         System.out.println("inside the jwt filter");
         String authHeader = request.getHeader("Authorization");
         System.out.println("extracted auth header");
@@ -55,7 +59,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             User user = userRepository.findByEmail(email).orElse(null);
             if (user != null) {
                 System.out.println("user found");
-                boolean isAccessValid = jwtService.isAccessTokenValid(jwt, user);
+                boolean isAccessValid = jwtService.isTokenValid(jwt, user);
                 if (isAccessValid && SecurityContextHolder.getContext().getAuthentication() == null) {
                     System.out.println("logging in");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -65,6 +69,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("CONTEXT ISSET " + SecurityContextHolder.getContext().getAuthentication());
                 } else if (!isAccessValid) {
                     System.out.println("you need to refresh your access token");
                     authService.refreshToken(user, response);

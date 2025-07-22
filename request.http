@@ -23,11 +23,11 @@ Content-Type: application/json
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTJAZ21haWwuY29tIiwiaWF0IjoxNzUzMDk4OTE4LCJleHAiOjE3NTMwOTg5NDh9.I5kcV5TqEzNH0Ppvc7B1chCdsw9knpCfoaV9ddvIOPc
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTJAZ21haWwuY29tIiwiaWF0IjoxNzUzMTc4MzI5LCJleHAiOjE3NTMxNzg2Mjl9.B7xkNAtGfVj1TdQbgY4f7riXL1DU3X-Y96a8N9PHjAQ
 
 {
   "user": {
-    "id": 1
+    "id": 2
   },
   "streetAddress": "123 Main St",
   "flatNumber": "4B",
