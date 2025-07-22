@@ -123,7 +123,7 @@ public class ResidenceService {
         dto.setCity(res.getCity());
         dto.setPostalCode(res.getPostalCode());
         dto.setCountry(res.getCountry());
-        dto.setResidenceType(String.valueOf(res.getResidenceType()));
+        dto.setResidenceType(res.getResidenceType());
         dto.setPrimary(res.isPrimary());
         dto.setActive(res.isActive());
         System.out.println("response is set");
