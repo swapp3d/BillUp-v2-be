@@ -11,5 +11,5 @@ public class BillRequestDTO {
     private LocalDate dueDate;
     private BillType type;
     private Long companyId;
-    private Long userId;
+    private Long residenceId;
 }

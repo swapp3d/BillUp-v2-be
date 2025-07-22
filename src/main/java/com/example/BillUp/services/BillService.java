@@ -4,14 +4,12 @@ import com.example.BillUp.dto.bill.BillRequestDTO;
 import com.example.BillUp.entities.Bill;
 import com.example.BillUp.entities.Company;
 import com.example.BillUp.entities.User;
+import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.Payment;
 import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillType;
-import com.example.BillUp.repositories.BillRepository;
-import com.example.BillUp.repositories.CompanyRepository;
-import com.example.BillUp.repositories.UserRepository;
-import com.example.BillUp.repositories.PaymentRepository;
+import com.example.BillUp.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +26,7 @@ public class BillService {
     private final BillRepository billRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final ResidenceRepository residenceRepository;
     private final PaymentRepository paymentRepository;
 
     @Transactional
@@ -35,8 +34,10 @@ public class BillService {
         Company company = companyRepository.findById(Math.toIntExact(dto.getCompanyId()))
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
-        User user = userRepository.findById(Math.toIntExact(dto.getUserId()))
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Residence residence = residenceRepository.findById(dto.getResidenceId())
+                .orElseThrow(() -> new RuntimeException("Residence not found"));
+
+        User user = residence.getUser();
 
         Bill bill = Bill.builder()
                 .name(dto.getName())
