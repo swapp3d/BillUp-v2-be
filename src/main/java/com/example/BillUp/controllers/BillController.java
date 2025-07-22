@@ -107,6 +107,15 @@ public class BillController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/address/{streetAddress}")
+    public ResponseEntity<List<BillResponseDTO>> getBillsByStreetAddress(@PathVariable String streetAddress) {
+        List<Bill> bills = billService.getBillsByStreetAddress(streetAddress);
+        List<BillResponseDTO> response = bills.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<BillResponseDTO> updateBill(@PathVariable Long id, @RequestBody BillRequestDTO billRequestDTO) {
         Bill updated = billService.updateBill(id, billRequestDTO);

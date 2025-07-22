@@ -46,6 +46,7 @@ public class BillService {
                 .type(dto.getType())
                 .company(company)
                 .user(user)
+                .streetAddress(residence.getStreetAddress())
                 .issueDate(LocalDate.now())
                 .status(BillStatus.OPEN)
                 .build();
@@ -173,5 +174,8 @@ public class BillService {
         return billRepository.findByUserIdAndStatusNot(userId, BillStatus.PAID).stream()
                 .mapToDouble(Bill::getRemainingAmount)
                 .sum();
+    }
+    public List<Bill> getBillsByStreetAddress(String streetAddress) {
+        return billRepository.findByStreetAddress(streetAddress);
     }
 }
