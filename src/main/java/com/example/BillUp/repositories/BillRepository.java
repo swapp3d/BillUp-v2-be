@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Repository
 
 public interface BillRepository extends JpaRepository<Bill, Long> {
+
 
     List<Bill> findByUserId(Long userId);
 
@@ -42,6 +44,10 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     List<Bill> findByCompanyIdAndDueDateBetween(@Param("companyId") Long companyId,
                                                 @Param("startDate") LocalDate startDate,
                                                 @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT b FROM Bill b LEFT JOIN FETCH b.payments WHERE b.id = :id")
+    Optional<Bill> findByIdWithPayments(@Param("id") Long id);
+
     List<Bill> findByUserIdAndStreetAddress(Long userId, String streetAddress);
 
     List<Bill> findByStreetAddressAndStatus(String streetAddress, BillStatus status);

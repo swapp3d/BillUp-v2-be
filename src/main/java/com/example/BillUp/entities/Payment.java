@@ -27,7 +27,7 @@ public class Payment {
     private LocalDateTime timestamp;
 
     @Column(nullable = false)
-    private String provider; // CREDIT_CARD, GOOGLE_PAY, PAYPAL
+    private String provider;
 
     @Column(nullable = false)
     private String transactionId;
@@ -36,7 +36,7 @@ public class Payment {
     private boolean success;
 
     @Column
-    private String methodToken; // optional mock token
+    private String methodToken;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

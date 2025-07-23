@@ -80,14 +80,13 @@ public class Bill {
         updatePriorityAndStatus();
     }
 
-    private void updatePriorityAndStatus() {
-        System.out.println("Bill status before updatePriorityAndStatus: " + status);
+    public void updatePriorityAndStatus() {
 
         if (status == BillStatus.PAID || status == BillStatus.FAILED) {
             if (dueDate != null) {
                 long daysLeft = LocalDate.now().until(dueDate).getDays();
 
-                if (daysLeft < 0 || daysLeft <= 3) {
+                if (daysLeft <= 3) {
                     priority = BillPriority.HIGH;
                 } else if (daysLeft <= 7) {
                     priority = BillPriority.MEDIUM;
@@ -107,7 +106,7 @@ public class Bill {
                 status = BillStatus.OPEN;
             }
 
-            if (daysLeft < 0 || daysLeft <= 3) {
+            if (daysLeft <= 3) {
                 priority = BillPriority.HIGH;
             } else if (daysLeft <= 7) {
                 priority = BillPriority.MEDIUM;

@@ -64,14 +64,17 @@ public class PaymentService {
         paymentRepository.save(payment);
         paymentRepository.flush();
 
-        Bill updatedBill = billRepository.findById(billId)
+        Bill updatedBill = billRepository.findByIdWithPayments(billId)
                 .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        remainingAmount = remainingAmount - amount;
+        updatedBill.setAmount(remainingAmount);
+        billRepository.save(updatedBill);
 
         if (updatedBill.isFullyPaid()) {
             updatedBill.setStatus(BillStatus.PAID);
-            log.info("Before save: bill status = {}", updatedBill.getStatus());
+            updatedBill.updatePriorityAndStatus();
             billRepository.save(updatedBill);
-            log.info("After save: bill status = {}", updatedBill.getStatus());
         }
 
         return payment;

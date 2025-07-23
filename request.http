@@ -58,13 +58,13 @@ Content-Type: application/json
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzIxMjY4OCwiZXhwIjoxNzUzMjEyOTg4fQ.T-j7ELvbqJjQKM-fnT0JK2CYHwMZqstfUjIV4AERrFM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI3NjMxNywidXNlcklkIjoyLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI3NjYxN30.dfZtBUQvCC5Dq3dueM8xyPkMHo1rUCDSpVgMN_zapHk
 
 {
-  "streetAddress": "Gedimino pr. 9",
-  "flatNumber": "19",
+  "streetAddress": "Ulvido g. 8",
+  "flatNumber": "10",
   "city": "Vilnius",
-  "postalCode": "LT-01103",
+  "postalCode": "LT-01107",
   "country": "Lithuania",
   "residenceType": "FLAT",
   "isPrimary": true,
@@ -96,7 +96,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpY
 ### Create a new bill
 POST http://localhost:8080/api/bills
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjA2NywiZXhwIjoxNzUzMjYyMzY3fQ.NyohHdPkvl5AjHwkZTavyagrOnDZGe1V-uEPqFD-lP4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI5NzUxMiwidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMyOTc4MTJ9.Db5-HL551Spn4bRAC7HE4SVRljkyBZLoNZrkeLhpYUk
 
 {
   "name": "DTEK",
@@ -108,12 +108,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhd
 }
 
 ### Pay the bill
-POST http://localhost:8080/api/payments/process
+POST http://localhost:8080/api/payment/process
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjEwMywiZXhwIjoxNzUzMjYyNDAzfQ.Z4xTwoy7IPzcVHqy85f0XCsAhaMGmDgwmLJOixSHRiQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI5NzU1MSwidXNlcklkIjoyLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI5Nzg1MX0.Oy3wAStsrc6oOJbQcyXZbh_c63p1bfou1BlbzqwLmr4
 
 {
-  "billId": 6,
+  "billId": 17,
   "userId": 2,
   "amount": 120.00,
   "provider": "PAYPAL",
@@ -121,5 +121,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsI
 }
 
 ### Check bill status
-GET http://localhost:8080/api/bills/6
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjI2NywiZXhwIjoxNzUzMjYyNTY3fQ.Px8BGMM5zJKMyGLSLqoi4JPg82fWWVVYFttT0Aoujj4
+GET http://localhost:8080/api/bills/17
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI5NjUxMywidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMyOTY4MTN9.k7VBNJbFteMK9EeA-diMOUC7DRwNXwGVM_u89zdqiD0
