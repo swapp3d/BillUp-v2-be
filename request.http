@@ -4,11 +4,20 @@ Content-Type: application/json
 
 {
   "role": "CLIENT",
-  "surname": "1",
-  "name": "test",
-  "email": "fake1@gmail.com",
-  "phoneNumber": "+370",
-  "password": "123456"
+  "surname": "T",
+  "name": "Hlib",
+  "email": "emptyno@gmail.com",
+  "phoneNumber": "+3701",
+  "password": "123456",
+  "residenceRequest": {
+    "streetAddress": "Gedimino pr. 9",
+    "flatNumber": "19",
+    "city": "Vilnius",
+    "postalCode": "LT-01103",
+    "country": "Lithuania",
+    "residenceType": "FLAT",
+    "isPrimary": true
+}
 }
 
 ### Register Company
@@ -17,10 +26,10 @@ Content-Type: application/json
 
 {
   "role": "COMPANY",
-  "name": "Ignitis",
-  "surname": null,
-  "email": "ignitis@gmail.com",
-  "phoneNumber": "+37011"
+  "name": "DTEK",
+  "email": "dtek@gmail.com",
+  "phoneNumber": "+37011",
+  "password": "123456"
 }
 
 ###Login
@@ -28,13 +37,20 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "fake1@gmail.com",
+  "email": "emptyno@gmail.com",
   "password": "123456"
 }
 
-### Address Autocomplete
-GET http://localhost:8080/api/address/autocomplete?q=Gedimino+9+Vilnius
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMwNzg5NzMsImV4cCI6MTc2MTcxODk3M30.zh_qTZJG-SDq_CRRj5oCF3iUxMHmmhzp5mcaVohy4o0
+###Login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dtek@gmail.com",
+  "password": "123456"
+}
+
+
 
 
 
@@ -42,7 +58,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpY
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMwNzg5NzMsImV4cCI6MTc2MTcxODk3M30.zh_qTZJG-SDq_CRRj5oCF3iUxMHmmhzp5mcaVohy4o0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzIxMjY4OCwiZXhwIjoxNzUzMjEyOTg4fQ.T-j7ELvbqJjQKM-fnT0JK2CYHwMZqstfUjIV4AERrFM
 
 {
   "streetAddress": "Gedimino pr. 9",
@@ -50,7 +66,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpY
   "city": "Vilnius",
   "postalCode": "LT-01103",
   "country": "Lithuania",
-  "residenceType": "flat",
+  "residenceType": "FLAT",
   "isPrimary": true,
   "active": true,
   "user": {
@@ -61,7 +77,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpY
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMwNzg5NzMsImV4cCI6MTc2MTcxODk3M30.zh_qTZJG-SDq_CRRj5oCF3iUxMHmmhzp5mcaVohy4o0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxNjI5MDAsImV4cCI6MTc1MzE2MjkzMH0.KQIHkEgrv0BnqJ5AARhc39rur8EjcTzCjFgrutlRVac
 
 {
   "streetAddress": "Antakalnio g. 12",
@@ -69,7 +85,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpY
   "city": "Vilnius",
   "postalCode": "LT-10232",
   "country": "Lithuania",
-  "residenceType": "house",
+  "residenceType": "HOUSE",
   "isPrimary": false,
   "active": true,
   "user": {
@@ -80,26 +96,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpY
 ### Create a new bill
 POST http://localhost:8080/api/bills
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxMTE4OTYsImV4cCI6MTc2MTc1MTg5Nn0.VFtEilG8InvV10bRv9XI503M4EeWN_W8yw6odScieYo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjA2NywiZXhwIjoxNzUzMjYyMzY3fQ.NyohHdPkvl5AjHwkZTavyagrOnDZGe1V-uEPqFD-lP4
 
 {
-  "name": "Electricity",
+  "name": "DTEK",
   "amount": 120.00,
   "dueDate": "2025-07-30",
+  "type": "ELECTRICITY",
   "companyId": 1,
-  "userId": 1,
-  "type": "UTILITY"
+  "residenceId": 1
 }
 
 ### Pay the bill
 POST http://localhost:8080/api/payments/process
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxMTE4OTYsImV4cCI6MTc2MTc1MTg5Nn0.VFtEilG8InvV10bRv9XI503M4EeWN_W8yw6odScieYo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjEwMywiZXhwIjoxNzUzMjYyNDAzfQ.Z4xTwoy7IPzcVHqy85f0XCsAhaMGmDgwmLJOixSHRiQ
 
 {
-  "billId": 1,
-  "userId": 1,
+  "billId": 6,
+  "userId": 2,
   "amount": 120.00,
   "provider": "PAYPAL",
   "methodToken": "demo-mock-token-abc"
 }
+
+### Check bill status
+GET http://localhost:8080/api/bills/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjI2NywiZXhwIjoxNzUzMjYyNTY3fQ.Px8BGMM5zJKMyGLSLqoi4JPg82fWWVVYFttT0Aoujj4

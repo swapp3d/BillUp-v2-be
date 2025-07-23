@@ -10,6 +10,7 @@ import com.example.BillUp.enumerators.BillType;
 import com.example.BillUp.services.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -128,6 +129,7 @@ public class BillController {
         return ResponseEntity.noContent().build();
     }
 
+    @Transactional
     @PostMapping("/{billId}/pay")
     public ResponseEntity<Payment> payBill(
             @PathVariable Long billId,

@@ -3,20 +3,19 @@ package com.example.BillUp.services;
 import com.example.BillUp.dto.bill.BillRequestDTO;
 import com.example.BillUp.entities.Bill;
 import com.example.BillUp.entities.Company;
-import com.example.BillUp.entities.Payment;
 import com.example.BillUp.entities.User;
-import com.example.BillUp.enumerators.BillPriority;
+import com.example.BillUp.entities.Residence;
+import com.example.BillUp.entities.Payment;
 import com.example.BillUp.enumerators.BillStatus;
+import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillType;
-import com.example.BillUp.repositories.BillRepository;
-import com.example.BillUp.repositories.CompanyRepository;
-import com.example.BillUp.repositories.UserRepository;
-import com.example.BillUp.services.PaymentService;
+import com.example.BillUp.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class BillService {
 
     private final BillRepository billRepository;
     private final CompanyRepository companyRepository;
-    private final UserRepository userRepository;
+    private final ResidenceRepository residenceRepository;
     private final PaymentService paymentService;
 
     @Transactional
@@ -34,8 +33,10 @@ public class BillService {
         Company company = companyRepository.findById(Math.toIntExact(dto.getCompanyId()))
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
-        User user = userRepository.findById(Math.toIntExact(dto.getUserId()))
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Residence residence = residenceRepository.findById(dto.getResidenceId())
+                .orElseThrow(() -> new RuntimeException("Residence not found"));
+
+        User user = residence.getUser();
 
         Bill bill = Bill.builder()
                 .name(dto.getName())
@@ -44,6 +45,7 @@ public class BillService {
                 .type(dto.getType())
                 .company(company)
                 .user(user)
+                .streetAddress(residence.getStreetAddress())
                 .issueDate(LocalDate.now())
                 .status(BillStatus.OPEN)
                 .build();
@@ -109,6 +111,7 @@ public class BillService {
         billRepository.deleteById(id);
     }
 
+
     @Transactional
     public Payment payBill(Long billId, Long userId, Double amount, String provider, String methodToken) {
         return paymentService.processBillPayment(billId, userId, amount, provider, methodToken);
@@ -137,5 +140,9 @@ public class BillService {
         return billRepository.findByUserIdAndStatusNot(userId, BillStatus.PAID).stream()
                 .mapToDouble(Bill::getRemainingAmount)
                 .sum();
+    }
+
+    public List<Bill> getBillsByStreetAddress(String streetAddress) {
+        return billRepository.findByStreetAddress(streetAddress);
     }
 }
