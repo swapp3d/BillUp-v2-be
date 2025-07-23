@@ -1,5 +1,6 @@
 package com.example.BillUp.services;
 
+import com.example.BillUp.config.jwt.JwtService;
 import com.example.BillUp.dto.payment.PaymentRequest;
 import com.example.BillUp.dto.payment.PaymentResponse;
 import com.example.BillUp.entities.Bill;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,6 +29,8 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final BillRepository billRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
+
 
     @Transactional
     public Payment processBillPayment(Long billId, Long userId, Double amount, String provider, String methodToken) {
@@ -80,14 +85,31 @@ public class PaymentService {
         return payment;
     }
 
-    public PaymentResponse processPayment(PaymentRequest request) {
+    @Transactional
+    public PaymentResponse processPayment(PaymentRequest request, String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        String email = jwtService.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!jwtService.isTokenValid(token, user)) {
+            throw new RuntimeException("Token is invalid or revoked");
+        }
+
         Payment payment = processBillPayment(
                 request.getBillId(),
-                request.getUserId(),
+                user.getId(),
                 request.getAmount(),
                 request.getProvider(),
                 request.getMethodToken()
         );
+
+
 
         return new PaymentResponse(
                 true,
@@ -97,5 +119,6 @@ public class PaymentService {
                 payment.getBill().getName(),
                 payment.getBill().getId()
         );
+
     }
 }

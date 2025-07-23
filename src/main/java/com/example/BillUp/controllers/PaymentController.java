@@ -16,9 +16,12 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/process")
-    public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest request) {
-        PaymentResponse response = paymentService.processPayment(request);
+    @PostMapping("/pay")
+    public ResponseEntity<PaymentResponse> pay(
+            @RequestBody PaymentRequest request,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        PaymentResponse response = paymentService.processPayment(request, authHeader);
         return ResponseEntity.ok(response);
     }
 }

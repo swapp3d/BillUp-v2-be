@@ -96,7 +96,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpY
 ### Create a new bill
 POST http://localhost:8080/api/bills
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI5NzUxMiwidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMyOTc4MTJ9.Db5-HL551Spn4bRAC7HE4SVRljkyBZLoNZrkeLhpYUk
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzMwMTMwMSwidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMzMDE2MDF9.YE6HjHU6L7JZ8MkHs7C-5n9gLEmQrS5968EEpxjFZ04
 
 {
   "name": "DTEK",
@@ -107,14 +107,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhd
   "residenceId": 1
 }
 
-### Pay the bill
-POST http://localhost:8080/api/payment/process
+### Pay the bill (demo authentication)
+POST http://localhost:8080/api/payment/pay
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI5NzU1MSwidXNlcklkIjoyLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI5Nzg1MX0.Oy3wAStsrc6oOJbQcyXZbh_c63p1bfou1BlbzqwLmr4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzMwMTM0OSwidXNlcklkIjoyLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzMwMTY0OX0.w6ZvDfQxuafF-QUm0jZetWmarWGInhUakA0Hvm_z5-I
 
 {
-  "billId": 17,
-  "userId": 2,
+  "billId": 19,
   "amount": 120.00,
   "provider": "PAYPAL",
   "methodToken": "demo-mock-token-abc"
