@@ -7,18 +7,13 @@ import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.TokenType;
 import com.example.BillUp.repositories.TokenRepository;
 import com.example.BillUp.services.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.View;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,21 +22,14 @@ public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
-    private final View error;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
-        try {
-            return ResponseEntity.ok(authService.register(request));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body( Map.of("error", e.getMessage()));
-        }
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDTO request) {
+        return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
         User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
         String accessToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);

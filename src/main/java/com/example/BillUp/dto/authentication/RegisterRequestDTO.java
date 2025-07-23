@@ -2,7 +2,9 @@ package com.example.BillUp.dto.authentication;
 
 import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.enumerators.Role;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -15,25 +17,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterRequestDTO {
 
-    @NotEmpty(message = "role is required")
+    @NotNull(message = "Role is required")
     private Role role;
 
-    @NotEmpty(message = "name is required!")
+    @NotBlank(message = "Name is required")
     private String name;
 
-    //in serviceAuth
+    // Optional: validate surname only for CLIENT in service logic
     private String surname;
 
-    @NotEmpty(message = "email is required!")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
+    @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit!")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit"
+    )
     private String password;
 
-    @NotEmpty(message = "phone number is required!")
+    @NotBlank(message = "Phone number is required")
+    @Pattern(
+            regexp = "^\\+?[0-9]{9,15}$",
+            message = "Phone number must be valid (e.g. +123456789)"
+    )
     private String phoneNumber;
 
+    @Valid
     private CreateResidenceRequest residenceRequest;
 }

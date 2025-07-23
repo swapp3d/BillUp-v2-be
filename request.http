@@ -23,13 +23,13 @@ Content-Type: application/json
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTJAZ21haWwuY29tIiwiaWF0IjoxNzUzMTc4MzI5LCJleHAiOjE3NTMxNzg2Mjl9.B7xkNAtGfVj1TdQbgY4f7riXL1DU3X-Y96a8N9PHjAQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTJAZ21haWwuY29tIiwiaWF0IjoxNzUzMjY5MTE3LCJ1c2VySWQiOjIsInJvbGVzIjoiQ0xJRU5UIiwiZXhwIjoxNzUzMjY5NDE3fQ.O4VuN1PKueJ4dgC-twB54Fi-NXBo0WwGXoEhW4-BsH8
 
 {
   "user": {
     "id": 2
   },
-  "streetAddress": "123 Main St",
+  "streetAddress": "1234 Main St",
   "flatNumber": "4B",
   "city": "Vilnius",
   "postalCode": "LT-01100",

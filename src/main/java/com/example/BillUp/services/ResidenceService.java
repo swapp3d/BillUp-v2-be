@@ -1,21 +1,17 @@
 package com.example.BillUp.services;
 
-import com.example.BillUp.dto.residence.AddressSuggestion;
 import com.example.BillUp.dto.residence.CreateResidenceRequest;
 import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
-import com.example.BillUp.enumerators.ResidenceType;
 import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 public class ResidenceService {
@@ -66,7 +62,7 @@ public class ResidenceService {
         System.out.println("postal code isset");
         res.setCountry(request.getCountry());
         System.out.println("country isset");
-        res.setResidenceType(ResidenceType.valueOf(request.getResidenceType()));
+        res.setResidenceType(request.getResidenceType());
         System.out.println("type isset");
         res.setPrimary(request.isPrimary());
         System.out.println("primary isset");

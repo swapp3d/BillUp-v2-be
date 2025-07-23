@@ -1,6 +1,6 @@
 package com.example.BillUp.dto.authentication;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequestDTO {
 
-    @NotEmpty(message = "Email is required")
+    @NotBlank(message = "Email is required")
     private String email;
 
-    @NotEmpty(message = "Password is required")
+    @NotBlank(message = "Password is required")
     private String password;
 }
