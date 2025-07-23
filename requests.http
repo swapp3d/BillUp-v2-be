@@ -1,0 +1,56 @@
+### GET request to example server
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "role": "CLIENT",
+  "surname": "1",
+  "name": "test",
+  "email": "fake12@gmail.com",
+  "phoneNumber": "+37064589624",
+  "password": "Qwerty12345",
+  "residenceRequest": {
+    "streetAddress": "a",
+    "flatNumber": "1A",
+    "city": "Vilnius",
+    "postalCode": "12345",
+    "country": "LT",
+    "residenceType": "HOUSE",
+    "isPrimary": true
+  }
+}
+
+###User Login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "fake12@gmail.com",
+  "password": "Qwerty12345"
+}
+
+###User logout
+POST http://localhost:8080/api/v1/auth/logout
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTJAZ21haWwuY29tIiwiaWF0IjoxNzUzMjY5MTE3LCJ1c2VySWQiOjIsInJvbGVzIjoiQ0xJRU5UIiwiZXhwIjoxNzUzMjY5NDE3fQ.O4VuN1PKueJ4dgC-twB54Fi-NXBo0WwGXoEhW4-BsH8
+
+### Company Register
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "role": "COMPANY",
+  "name": "ESO",
+  "email": "eso@gmail.com",
+  "phoneNumber": "+3701",
+  "password": "123456"
+}
+
+### Company login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "eso@gmail.com",
+  "password": "123456"
+}
