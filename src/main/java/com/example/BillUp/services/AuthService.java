@@ -189,8 +189,8 @@ public class AuthService {
             oldRefreshToken.setRevoked(true);
             tokenRepository.save(oldRefreshToken);
 
-            String newAccessToken = jwtService.generateToken(user.getEmail());
-            String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
+            String newAccessToken = jwtService.generateToken(user);
+            String newRefreshToken = jwtService.generateRefreshToken(user);
 
             Token newAccessTokenEntity = Token.builder()
                     .token(newAccessToken)
