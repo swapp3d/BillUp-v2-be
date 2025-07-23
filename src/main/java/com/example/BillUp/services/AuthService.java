@@ -58,4 +58,66 @@ public class AuthService {
         }
         return user;
     }
+<<<<<<< Updated upstream
+=======
+
+    public void refreshToken(User user, HttpServletResponse response) {
+        try {
+            Optional<Token> oldRefreshTokenOpt = tokenRepository.findByUserAndRevokedFalse(user);
+
+            if (oldRefreshTokenOpt.isEmpty()) {
+                System.out.println("refresh token not found");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            Token oldRefreshToken = oldRefreshTokenOpt.get();
+
+            if (!jwtService.isRefreshTokenValid(oldRefreshToken.getToken(), user)) {
+                System.out.println("refresh token is not valid");
+                oldRefreshToken.setRevoked(true);
+                tokenRepository.save(oldRefreshToken);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+
+                Map<String, String> errorResponse = Map.of(
+                        "message", "You need to login",
+                        "error", "Refresh token is invalid or expired"
+                );
+                new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
+                return;
+            }
+
+            System.out.println("refresh token is valid");
+            oldRefreshToken.setRevoked(true);
+            tokenRepository.save(oldRefreshToken);
+
+            String newAccessToken = jwtService.generateToken(user);
+            String newRefreshToken = jwtService.generateRefreshToken(user);
+
+            Token newRefreshTokenEntity = Token.builder()
+                    .token(newRefreshToken)
+                    .tokenType(TokenType.REFRESH)
+                    .expiryDate(jwtService.extractExpirationDate(newRefreshToken))
+                    .revoked(false)
+                    .user(user)
+                    .build();
+
+            tokenRepository.save(newRefreshTokenEntity);
+
+            LoginResponseDTO tokens = new LoginResponseDTO(newAccessToken, newRefreshToken);
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_OK);
+            new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        } catch (Exception e) {
+            try {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Token refresh failed " + e.getMessage());
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+>>>>>>> Stashed changes
 }
