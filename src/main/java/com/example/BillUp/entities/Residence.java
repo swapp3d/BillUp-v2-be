@@ -1,8 +1,8 @@
 package com.example.BillUp.entities;
 
+import com.example.BillUp.enumerators.ResidenceType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -10,12 +10,19 @@ import java.time.LocalDate;
 @Table(name = "residences")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Residence {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "street_address", nullable = false, length = 255)
     private String streetAddress;
@@ -32,18 +39,15 @@ public class Residence {
     @Column(name = "country", nullable = false, length = 100)
     private String country;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "residence_type", nullable = false, length = 50)
-    private String residenceType; // "house" or "flat"
+    private ResidenceType residenceType; // "house" or "flat"
 
     @Column(name = "is_primary", nullable = false)
-    private boolean isPrimary = false;
+    private boolean isPrimary;
 
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @Column(name = "registration_date", nullable = false)
     private LocalDate registrationDate = LocalDate.now();

@@ -11,10 +11,14 @@ import com.example.BillUp.repositories.PaymentRepository;
 import com.example.BillUp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -23,6 +27,7 @@ public class PaymentService {
     private final BillRepository billRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public Payment processBillPayment(Long billId, Long userId, Double amount, String provider, String methodToken) {
         Bill bill = billRepository.findById(billId)
                 .orElseThrow(() -> new RuntimeException("Bill not found"));
@@ -57,10 +62,16 @@ public class PaymentService {
                 .build();
 
         paymentRepository.save(payment);
+        paymentRepository.flush();
 
-        if (bill.isFullyPaid()) {
-            bill.setStatus(BillStatus.PAID);
-            billRepository.save(bill);
+        Bill updatedBill = billRepository.findById(billId)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        if (updatedBill.isFullyPaid()) {
+            updatedBill.setStatus(BillStatus.PAID);
+            log.info("Before save: bill status = {}", updatedBill.getStatus());
+            billRepository.save(updatedBill);
+            log.info("After save: bill status = {}", updatedBill.getStatus());
         }
 
         return payment;

@@ -1,7 +1,13 @@
 package com.example.BillUp.config.jwt;
 
+import com.example.BillUp.dto.authentication.LoginResponseDTO;
+import com.example.BillUp.entities.Token;
 import com.example.BillUp.entities.User;
+import com.example.BillUp.enumerators.TokenType;
+import com.example.BillUp.repositories.TokenRepository;
 import com.example.BillUp.repositories.UserRepository;
+import com.example.BillUp.services.AuthService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,41 +22,65 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String servletPath = request.getServletPath();
+        System.out.println(servletPath);
+        System.out.println("Authentication before logout: " + SecurityContextHolder.getContext().getAuthentication());
+
+        System.out.println("inside the jwt filter");
         String authHeader = request.getHeader("Authorization");
+        System.out.println("extracted auth header");
         String jwt = extractJwtToken(authHeader);
+        System.out.println("extracted jwt token " + jwt);
         if (jwt == null) {
+            System.out.println("bruh, your jwt is null");
             filterChain.doFilter(request, response);
+            System.out.println("out of some filter ;/");
             return;
         }
-        String email = jwtService.extractEmail(jwt);
+        System.out.println("maybe we have problem with jwt service due updates");
+        String email = jwtService.extractEmailExpired(jwt);
+        System.out.println("extracted an email: " + email);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (email != null) {
+            System.out.println("email found");
             User user = userRepository.findByEmail(email).orElse(null);
-            if (user != null && jwtService.isTokenValid(jwt, user)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        Collections.emptyList()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (user != null) {
+                System.out.println("user found");
+                boolean isAccessValid = jwtService.isTokenValid(jwt, user);
+                if (isAccessValid && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    System.out.println("logging in");
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            user,
+                            null,
+                            Collections.emptyList()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("CONTEXT ISSET " + SecurityContextHolder.getContext().getAuthentication());
+                } else if (!isAccessValid) {
+                    System.out.println("you need to refresh your access token");
+                    authService.refreshToken(user, response);
+                    return;
+                }
             }
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 
-    private String extractJwtToken(String authHeader) {
+    private String extractJwtToken (String authHeader){
         if (authHeader == null) return null;
 
         authHeader = authHeader.trim();

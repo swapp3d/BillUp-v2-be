@@ -1,20 +1,17 @@
 package com.example.BillUp.exceptions;
 
-import com.example.BillUp.controllers.authController;
+import com.example.BillUp.controllers.AuthController;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.net.URI;
 
-@RestControllerAdvice(assignableTypes = authController.class)
+@RestControllerAdvice(assignableTypes = AuthController.class)
 @Order(1)
 public class AuthenticationExceptionHandler {
 

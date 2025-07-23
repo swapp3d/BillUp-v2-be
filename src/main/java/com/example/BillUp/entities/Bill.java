@@ -47,6 +47,9 @@ public class Bill {
     @Column(nullable = false)
     private LocalDate issueDate;
 
+    @Column(nullable = false)
+    private String streetAddress;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
@@ -55,7 +58,7 @@ public class Bill {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
 
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
@@ -78,44 +81,55 @@ public class Bill {
     }
 
     private void updatePriorityAndStatus() {
-        LocalDate today = LocalDate.now();
+        System.out.println("Bill status before updatePriorityAndStatus: " + status);
+
+        if (status == BillStatus.PAID || status == BillStatus.FAILED) {
+            if (dueDate != null) {
+                long daysLeft = LocalDate.now().until(dueDate).getDays();
+
+                if (daysLeft < 0 || daysLeft <= 3) {
+                    priority = BillPriority.HIGH;
+                } else if (daysLeft <= 7) {
+                    priority = BillPriority.MEDIUM;
+                } else {
+                    priority = BillPriority.LOW;
+                }
+            }
+            return;
+        }
 
         if (dueDate != null) {
-            long daysLeft = today.until(dueDate).getDays();
+            long daysLeft = LocalDate.now().until(dueDate).getDays();
 
-            // Update status based on due date
-            if (daysLeft < 0 && status != BillStatus.PAID) {
+            if (daysLeft < 0) {
                 status = BillStatus.OVERDUE;
+            } else {
+                status = BillStatus.OPEN;
             }
 
-            // Update priority based on days left
-            if (daysLeft < 0) {
-                priority = BillPriority.HIGH;
-            } else if (daysLeft <= 3) {
+            if (daysLeft < 0 || daysLeft <= 3) {
                 priority = BillPriority.HIGH;
             } else if (daysLeft <= 7) {
                 priority = BillPriority.MEDIUM;
             } else {
                 priority = BillPriority.LOW;
             }
-
-            // Keep OPEN status if not overdue and not paid/failed
-            if (status != BillStatus.PAID && status != BillStatus.FAILED && daysLeft >= 0) {
-                status = BillStatus.OPEN;
-            }
         }
     }
 
-    public Double getTotalPaid() {
-        return payments != null ?
-                payments.stream().mapToDouble(Payment::getAmount).sum() : 0.0;
-    }
-
-    public Double getRemainingAmount() {
-        return amount - getTotalPaid();
+    public double getTotalPaid() {
+        if (payments == null) return 0.0;
+        return payments.stream()
+                .filter(Payment::isSuccess)
+                .mapToDouble(Payment::getAmount)
+                .sum();
     }
 
     public boolean isFullyPaid() {
-        return getTotalPaid() >= amount;
+        return getTotalPaid() >= this.amount;
+    }
+
+    public double getRemainingAmount() {
+        return this.amount - getTotalPaid();
     }
 }
