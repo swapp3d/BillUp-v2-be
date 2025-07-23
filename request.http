@@ -4,10 +4,31 @@ Content-Type: application/json
 
 {
   "role": "CLIENT",
-  "surname": "1",
-  "name": "test",
-  "email": "fake1@gmail.com",
-  "phoneNumber": "+370",
+  "surname": "T",
+  "name": "Hlib",
+  "email": "emptyno@gmail.com",
+  "phoneNumber": "+3701",
+  "password": "123456",
+  "residenceRequest": {
+    "streetAddress": "Gedimino pr. 9",
+    "flatNumber": "19",
+    "city": "Vilnius",
+    "postalCode": "LT-01103",
+    "country": "Lithuania",
+    "residenceType": "FLAT",
+    "isPrimary": true
+}
+}
+
+### Register Company
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "role": "COMPANY",
+  "name": "DTEK",
+  "email": "dtek@gmail.com",
+  "phoneNumber": "+37011",
   "password": "123456"
 }
 
@@ -16,25 +37,89 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "fake1@gmail.com",
+  "email": "emptyno@gmail.com",
   "password": "123456"
+}
+
+###Login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dtek@gmail.com",
+  "password": "123456"
+}
+
+
+
+
+
+
+### Create a new residence
+POST http://localhost:8080/api/residences
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzIxMjY4OCwiZXhwIjoxNzUzMjEyOTg4fQ.T-j7ELvbqJjQKM-fnT0JK2CYHwMZqstfUjIV4AERrFM
+
+{
+  "streetAddress": "Gedimino pr. 9",
+  "flatNumber": "19",
+  "city": "Vilnius",
+  "postalCode": "LT-01103",
+  "country": "Lithuania",
+  "residenceType": "FLAT",
+  "isPrimary": true,
+  "active": true,
+  "user": {
+    "id": 1
+  }
 }
 
 ### Create a new residence
 POST http://localhost:8080/api/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTJAZ21haWwuY29tIiwiaWF0IjoxNzUzMjY5MTE3LCJ1c2VySWQiOjIsInJvbGVzIjoiQ0xJRU5UIiwiZXhwIjoxNzUzMjY5NDE3fQ.O4VuN1PKueJ4dgC-twB54Fi-NXBo0WwGXoEhW4-BsH8
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxNjI5MDAsImV4cCI6MTc1MzE2MjkzMH0.KQIHkEgrv0BnqJ5AARhc39rur8EjcTzCjFgrutlRVac
 
 {
+  "streetAddress": "Antakalnio g. 12",
+  "flatNumber": "",
+  "city": "Vilnius",
+  "postalCode": "LT-10232",
+  "country": "Lithuania",
+  "residenceType": "HOUSE",
+  "isPrimary": false,
+  "active": true,
   "user": {
     "id": 2
-  },
-  "streetAddress": "1234 Main St",
-  "flatNumber": "4B",
-  "city": "Vilnius",
-  "postalCode": "LT-01100",
-  "country": "Lithuania",
-  "residenceType": "FLAT",
-  "isPrimary": true,
-  "active": true
+  }
 }
+
+### Create a new bill
+POST http://localhost:8080/api/bills
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjA2NywiZXhwIjoxNzUzMjYyMzY3fQ.NyohHdPkvl5AjHwkZTavyagrOnDZGe1V-uEPqFD-lP4
+
+{
+  "name": "DTEK",
+  "amount": 120.00,
+  "dueDate": "2025-07-30",
+  "type": "ELECTRICITY",
+  "companyId": 1,
+  "residenceId": 1
+}
+
+### Pay the bill
+POST http://localhost:8080/api/payments/process
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjEwMywiZXhwIjoxNzUzMjYyNDAzfQ.Z4xTwoy7IPzcVHqy85f0XCsAhaMGmDgwmLJOixSHRiQ
+
+{
+  "billId": 6,
+  "userId": 2,
+  "amount": 120.00,
+  "provider": "PAYPAL",
+  "methodToken": "demo-mock-token-abc"
+}
+
+### Check bill status
+GET http://localhost:8080/api/bills/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjI2NywiZXhwIjoxNzUzMjYyNTY3fQ.Px8BGMM5zJKMyGLSLqoi4JPg82fWWVVYFttT0Aoujj4

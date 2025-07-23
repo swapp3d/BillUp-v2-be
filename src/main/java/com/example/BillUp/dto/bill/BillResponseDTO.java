@@ -19,6 +19,7 @@ public class BillResponseDTO {
     private LocalDate issueDate;
     private String companyName;
     private String userName;
+    private String streetAddress;
     private Double totalPaid;
     private Double remainingAmount;
 }
