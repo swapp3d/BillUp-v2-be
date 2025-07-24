@@ -1,5 +1,6 @@
 package com.example.BillUp.dto.payment;
 
+import com.example.BillUp.enumerators.BillStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

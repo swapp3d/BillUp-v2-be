@@ -10,7 +10,7 @@ import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillType;
 import com.example.BillUp.repositories.*;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +99,9 @@ public class BillService {
         if (dto.getAmount() != null) bill.setAmount(dto.getAmount());
         if (dto.getDueDate() != null) bill.setDueDate(dto.getDueDate());
         if (dto.getType() != null) bill.setType(dto.getType());
+        if (dto.getStatus() != null) bill.setStatus(dto.getStatus());
+
+
 
         return billRepository.save(bill);
     }

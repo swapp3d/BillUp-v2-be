@@ -66,10 +66,10 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0MTcxOSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0MjAxOX0.OvmzxAIHHkjEnJq303tRGk4ywrclFiYdqembowKydxo
 
 {
-  "streetAddress": "Gedimino pr. 9",
-  "flatNumber": "19",
+  "streetAddress": "Ulvido g. 8",
+  "flatNumber": "10",
   "city": "Vilnius",
-  "postalCode": "LT-01103",
+  "postalCode": "LT-01107",
   "country": "Lithuania",
   "residenceType": "FLAT",
   "isPrimary": true,
@@ -114,6 +114,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhd
   "residenceId": 1
 }
 
+
 ### Pay the bill
 POST http://localhost:8080/api/v1/payments/process
 Content-Type: application/json
@@ -121,16 +122,31 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsI
 
 {
   "billId": 1,
-  "userId": 4,
+  "userId": 4
+}
+
+### Pay the bill (demo authentication)
+POST http://localhost:8080/api/payment/pay
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzMwMTM0OSwidXNlcklkIjoyLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzMwMTY0OX0.w6ZvDfQxuafF-QUm0jZetWmarWGInhUakA0Hvm_z5-I
+
+{
+  "billId": 19,
   "amount": 120.00,
   "provider": "PAYPAL",
   "methodToken": "demo-mock-token-abc"
 }
 
 ### Check bill status
+
 GET http://localhost:8080/api/v1/bills/6
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjI2NywiZXhwIjoxNzUzMjYyNTY3fQ.Px8BGMM5zJKMyGLSLqoi4JPg82fWWVVYFttT0Aoujj4
 
 ### Set Primary residence
 PUT http://localhost:8080/api/v1/residences/1/set-primary
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0OTM4OSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0OTY4OX0.u5-hlA5m9fq_f0jUT7XtBL-hBqduY-HqskDBG-kyNTY
+
+### Check something
+GET http://localhost:8080/api/bills/17
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI5NjUxMywidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMyOTY4MTN9.k7VBNJbFteMK9EeA-diMOUC7DRwNXwGVM_u89zdqiD0
+
