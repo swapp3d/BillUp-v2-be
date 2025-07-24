@@ -37,8 +37,8 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "emptyno@gmail.com",
-  "password": "Qwerty12345!"
+  "email": "test@gmail.com",
+  "password": "12345678Ab_"
 }
 
 ###Get my residences
@@ -52,7 +52,7 @@ Content-Type: application/json
 
 {
   "email": "dtek@gmail.com",
-  "password": "123456"
+  "password": "Qwerty12345!"
 }
 
 
@@ -101,14 +101,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsI
 ### Create a new bill
 POST http://localhost:8080/api/v1/bills
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2NzkyNSwidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMyNjgyMjV9.k2J_IiLqdBs_VBxNlBBeGRYVvQJY5uq7HZfadPmU7Zg
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3OTQwOCwidXNlcklkIjoyLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMzNzk3MDh9.irU5Xs_9kkCn1xdO2f8yaG8QnHb7SbsQLL9wtpoc3_c
 
 
 {
-  "name": "DTEK",
-  "amount": 120.00,
+  "name": "DTEK bill for 06.25",
+  "amount": 145.66,
   "dueDate": "2025-07-30",
   "type": "ELECTRICITY",
+  "status": "OPEN",
   "companyId": 1,
   "residenceId": 1
 }
@@ -117,20 +118,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhd
 ### Pay the bill
 POST http://localhost:8080/api/v1/payments/process
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2ODE0MSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI2ODQ0MX0.zaKyzmlE57HE6fjZxrW0VDUq4-COpLlEl9X3egehWD0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3NzQzMiwidXNlcklkIjoxLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM3NzczMn0.VCHt0IaQpx3bcVyOXNGtor51mME3esxA1CAxTLa-O94
 
 {
   "billId": 1,
-  "userId": 4
+  "userId": 1
 }
 
 ### Pay the bill (demo authentication)
-POST http://localhost:8080/api/payment/pay
+POST http://localhost:8080/api/v1/payments/pay
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzMwMTcyNSwidXNlcklkIjoyLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzMwMjAyNX0.-iWyQg2jdnH5VHPBCupAaEaOTU2iXMvj79govwpp4ZU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3OTE1MiwidXNlcklkIjoxLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM3OTQ1Mn0.El5L8lGBBCnlzH_UyO6-LcCQ8CW-CSY7GwwkhmySTy4
 
 {
-  "billId": 20,
+  "billId": 1,
   "amount": 120.00,
   "provider": "PAYPAL",
   "methodToken": "demo-mock-token-abc"

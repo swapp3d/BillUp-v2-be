@@ -99,7 +99,6 @@ public class BillService {
         if (dto.getAmount() != null) bill.setAmount(dto.getAmount());
         if (dto.getDueDate() != null) bill.setDueDate(dto.getDueDate());
         if (dto.getType() != null) bill.setType(dto.getType());
-        if (dto.getStatus() != null) bill.setStatus(dto.getStatus());
 
 
 
