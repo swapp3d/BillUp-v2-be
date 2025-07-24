@@ -21,6 +21,7 @@ public class RegisterRequestDTO {
     private Role role;
 
     @NotBlank(message = "Name is required")
+    @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
 
     // Optional: validate surname only for CLIENT in service logic
@@ -28,20 +29,24 @@ public class RegisterRequestDTO {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Invalid email format"
+    )
     private String email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit"
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!\"#$%&'()*+,-./:;<=>?@\\[\\]^_`{|}~]).+$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
     )
     private String password;
 
     @NotBlank(message = "Phone number is required")
     @Pattern(
-            regexp = "^\\+?[0-9]{9,15}$",
-            message = "Phone number must be valid (e.g. +123456789)"
+            regexp = "^\\+[1-9]\\d{7,14}$",
+            message = "Phone number must be in E.164 format (8–15 digits, e.g. +123456789)"
     )
     private String phoneNumber;
 

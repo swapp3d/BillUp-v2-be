@@ -28,8 +28,8 @@ Content-Type: application/json
   "role": "COMPANY",
   "name": "DTEK",
   "email": "dtek@gmail.com",
-  "phoneNumber": "+37011",
-  "password": "123456"
+  "phoneNumber": "+37012345678",
+  "password": "Qwerty12345!"
 }
 
 ###Login
@@ -38,7 +38,7 @@ Content-Type: application/json
 
 {
   "email": "emptyno@gmail.com",
-  "password": "123456"
+  "password": "Qwerty12345!"
 }
 
 ###Get my residences

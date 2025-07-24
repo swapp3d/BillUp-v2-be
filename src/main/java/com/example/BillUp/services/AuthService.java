@@ -156,8 +156,14 @@ public class AuthService {
         }
         List<Token> tokens = tokenRepository.findAllByUserAndRevokedFalse(user);
         if (!tokens.isEmpty()) {
-            throw new AlreadyLoggedInException("User is already logged in");
+            tokens.forEach(token -> {
+                token.setRevoked(true);
+                tokenRepository.save(token);
+            });
         }
+//        if (!tokens.isEmpty()) {
+//            throw new AlreadyLoggedInException("User is already logged in");
+//        }
 
         return user;
     }
