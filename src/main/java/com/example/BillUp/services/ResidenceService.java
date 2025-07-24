@@ -63,7 +63,7 @@ public class ResidenceService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        boolean isValid = addressService.validateAddress(
+       /* boolean isValid = addressService.validateAddress(
                 request.getStreetAddress(),
                 request.getFlatNumber() == null ? "" : request.getFlatNumber(),
                 request.getCity(),
@@ -74,6 +74,7 @@ public class ResidenceService {
         if (!isValid) {
             throw new IllegalArgumentException("Provided address is invalid");
         }
+        */
 
         System.out.println("creating residence");
 
@@ -114,7 +115,7 @@ public class ResidenceService {
         residenceRepository.save(res);
     }
 
-   /* public void activateResidence(Long id, String username) {
+   public void activateResidence(Long id, String username) {
         Residence residence = residenceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
         if (!residence.getUser().getUsername().equals(username)) {
@@ -122,7 +123,7 @@ public class ResidenceService {
         }
         residence.setActive(true);
         residenceRepository.save(residence);
-    }*/
+    }
 
     public void setPrimaryResidence(Long residenceId, String email) {
         User user = userRepository.findByEmail(email)

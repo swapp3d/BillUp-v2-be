@@ -6,8 +6,8 @@ Content-Type: application/json
   "role": "CLIENT",
   "surname": "1",
   "name": "test",
-  "email": "fake12@gmail.com",
-  "phoneNumber": "+37064589624",
+  "email": "fake1234@gmail.com",
+  "phoneNumber": "+37064589622",
   "password": "Qwerty12345",
   "residenceRequest": {
     "streetAddress": "a",

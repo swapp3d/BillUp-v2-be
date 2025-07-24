@@ -67,11 +67,11 @@ public class ResidenceController {
         return ResponseEntity.ok("Residence deactivated");
     }
 
-    /*@PutMapping("/{id}/activate")
+    @PutMapping("/{id}/activate")
     public ResponseEntity<?> activateResidence(@PathVariable Long id, Principal principal) {
         residenceService.activateResidence(id, principal.getName());
         return ResponseEntity.ok("Residence activated");
-    }*/
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleBadRequest(IllegalArgumentException ex) {

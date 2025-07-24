@@ -63,18 +63,16 @@ Content-Type: application/json
 ### Create a new residence
 POST http://localhost:8080/api/v1/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0MTcxOSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0MjAxOX0.OvmzxAIHHkjEnJq303tRGk4ywrclFiYdqembowKydxo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTIzQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3MTUxNywidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM3MTgxN30.blnHJvqzmt5TunGAh5kYzVWqymnmfgfqWMpY4WxlSWU
 
 {
-  "streetAddress": "Ulvido g. 8",
+  "streetAddress": "Ulvidino g. 87",
   "flatNumber": "10",
   "city": "Vilnius",
   "postalCode": "LT-01107",
   "country": "Lithuania",
   "residenceType": "FLAT",
   "isPrimary": true,
-  "isSecondary": false,
-  "active": true,
   "user": {
     "id": 1
   }
@@ -86,7 +84,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0MTUzNiwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0MTgzNn0.rOV2Ar8jkHPARybTqCIAna56CVMtbWn9x4ZYnoqNNJc
 
 {
-  "streetAddress": "Antakalnio g. 12",
+  "streetAddress": "Antakalnio g. 19",
   "flatNumber": "",
   "city": "Vilnius",
   "postalCode": "LT-10232",
