@@ -20,7 +20,6 @@ public class BillRequestDTO {
     @FutureOrPresent(message = "Due date must be today or in the future")
     private LocalDate dueDate;
 
-    @NotNull(message = "Status is required")
     private BillStatus status;
 
     @NotNull(message = "Bill type is required")

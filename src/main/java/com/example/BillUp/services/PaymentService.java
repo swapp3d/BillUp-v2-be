@@ -11,12 +11,9 @@ import com.example.BillUp.repositories.BillRepository;
 import com.example.BillUp.repositories.PaymentRepository;
 import com.example.BillUp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -30,7 +27,6 @@ public class PaymentService {
     private final BillRepository billRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
-
 
     @Transactional
     public Payment processBillPayment(Long billId, Long userId, Double amount, String provider, String methodToken) {
@@ -66,30 +62,18 @@ public class PaymentService {
                 .bill(bill)
                 .build();
 
-        payment.setBill(bill);
         bill.getPayments().add(payment);
 
-        paymentRepository.save(payment);
-        System.out.println("the payment: " + payment.getAmount());
-        paymentRepository.flush();
+        double newRemaining = remainingAmount - amount;
+        bill.setAmount(newRemaining);
 
-        Bill updatedBill = billRepository.findByIdWithPayments(billId)
-                .orElseThrow(() -> new RuntimeException("Bill not found"));
-        System.out.println("bill amount: " + updatedBill.getAmount());
-        remainingAmount -= amount;
-        updatedBill.setAmount(remainingAmount);
-        billRepository.save(updatedBill);
-        System.out.println("bill amount after pay: " + updatedBill.getAmount());
-
-        remainingAmount = remainingAmount - amount;
-        updatedBill.setAmount(remainingAmount);
-        billRepository.save(updatedBill);
-
-        if (updatedBill.isFullyPaid()) {
-            updatedBill.setStatus(BillStatus.PAID);
-            updatedBill.updatePriorityAndStatus();
-            billRepository.save(updatedBill);
+        if (bill.isFullyPaid()) {
+            bill.setStatus(BillStatus.PAID);
+            bill.updatePriorityAndStatus();
         }
+
+        paymentRepository.save(payment);
+        billRepository.save(bill);
 
         return payment;
     }
@@ -118,17 +102,13 @@ public class PaymentService {
                 request.getMethodToken()
         );
 
-
-
         return new PaymentResponse(
                 true,
                 "Transaction successful",
-
                 payment.getTransactionId(),
                 payment.getAmount(),
                 payment.getBill().getName(),
                 payment.getBill().getId()
         );
-
     }
 }

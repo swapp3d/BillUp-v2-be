@@ -35,21 +35,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             String servletPath = request.getServletPath();
             System.out.println(servletPath);
-            System.out.println("Authentication before logout: " + SecurityContextHolder.getContext().getAuthentication());
 
             System.out.println("inside the jwt filter");
             String authHeader = request.getHeader("Authorization");
-            System.out.println("extracted auth header");
             String jwt = extractJwtToken(authHeader);
-            System.out.println("extracted jwt token " + jwt);
             if (jwt == null) {
                 System.out.println("your jwt is null");
                 filterChain.doFilter(request, response);
-                System.out.println("out of some filter ;/");
                 return;
             }
             String email = jwtService.extractEmail(jwt);
-            System.out.println("extracted an email: " + email);
 
             if (email == null) {
                 filterChain.doFilter(request, response);
@@ -68,7 +63,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             boolean isAccessValid = result.isValid();
             boolean isAccessRevoked = result.isRevoked();
             if (isAccessValid && SecurityContextHolder.getContext().getAuthentication() == null) {
-                System.out.println("logging in");
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         user,
                         null,
@@ -76,7 +70,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                System.out.println("finished logging");
             } else if (!isAccessValid && !isAccessRevoked) {
                 System.out.println("you need to refresh your access token");
                 authService.refreshToken(user, response);
