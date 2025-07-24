@@ -18,7 +18,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity()
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -30,7 +30,7 @@ public class SecurityConfiguration {
 //
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final LogoutService logoutService;
 
@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                 .cors(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
 //                .authenticationProvider(authenticationProvider)

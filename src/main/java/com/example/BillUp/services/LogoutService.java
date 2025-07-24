@@ -41,7 +41,7 @@ public class LogoutService implements LogoutHandler {
            return;
        }
 
-       String email = jwtService.extractEmailExpired(tokenFromHeader);
+       String email = jwtService.extractEmail(tokenFromHeader);
        if (email == null) {
            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
            return;

@@ -70,10 +70,16 @@ public class PaymentService {
         bill.getPayments().add(payment);
 
         paymentRepository.save(payment);
+        System.out.println("the payment: " + payment.getAmount());
         paymentRepository.flush();
 
         Bill updatedBill = billRepository.findByIdWithPayments(billId)
                 .orElseThrow(() -> new RuntimeException("Bill not found"));
+        System.out.println("bill amount: " + updatedBill.getAmount());
+        remainingAmount -= amount;
+        updatedBill.setAmount(remainingAmount);
+        billRepository.save(updatedBill);
+        System.out.println("bill amount after pay: " + updatedBill.getAmount());
 
         remainingAmount = remainingAmount - amount;
         updatedBill.setAmount(remainingAmount);
@@ -100,7 +106,7 @@ public class PaymentService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!jwtService.isTokenValid(token, user)) {
+        if (!jwtService.validateToken(token, user).isValid()) {
             throw new RuntimeException("Token is invalid or revoked");
         }
 

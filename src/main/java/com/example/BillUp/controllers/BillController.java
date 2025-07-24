@@ -8,6 +8,7 @@ import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillType;
 import com.example.BillUp.services.BillService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class BillController {
     private final BillService billService;
 
     @PostMapping
-    public ResponseEntity<BillResponseDTO> createBill(@RequestBody BillRequestDTO billRequestDTO) {
+    public ResponseEntity<BillResponseDTO> createBill(@Valid @RequestBody BillRequestDTO billRequestDTO) {
         Bill created = billService.createBill(billRequestDTO);
         return ResponseEntity.ok(convertToResponseDTO(created));
     }
