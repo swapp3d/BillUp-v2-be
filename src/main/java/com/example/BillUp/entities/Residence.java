@@ -46,6 +46,9 @@ public class Residence {
     @Column(name = "is_primary", nullable = false)
     private boolean isPrimary;
 
+   /* @Column(name = "is_secondary", nullable = true)
+    private boolean isSecondary;*/
+
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
