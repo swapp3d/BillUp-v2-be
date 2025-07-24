@@ -64,7 +64,7 @@ public class User implements UserDetails {
 
     private Double balance;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Company company;
 
     @Override
