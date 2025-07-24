@@ -17,7 +17,7 @@ Content-Type: application/json
     "country": "Lithuania",
     "residenceType": "FLAT",
     "isPrimary": true
-}
+  }
 }
 
 ### Register Company
@@ -41,6 +41,11 @@ Content-Type: application/json
   "password": "123456"
 }
 
+###Get my residences
+GET http://localhost:8080/api/v1/residences
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI3NTU1MywidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI3NTg1M30.rj_yPdCtPLbfI8NG5sHfb1wckLbX8fcYD0gGCcz4iMg
+
 ###Login
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
@@ -56,9 +61,9 @@ Content-Type: application/json
 
 
 ### Create a new residence
-POST http://localhost:8080/api/residences
+POST http://localhost:8080/api/v1/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzIxMjY4OCwiZXhwIjoxNzUzMjEyOTg4fQ.T-j7ELvbqJjQKM-fnT0JK2CYHwMZqstfUjIV4AERrFM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0MTcxOSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0MjAxOX0.OvmzxAIHHkjEnJq303tRGk4ywrclFiYdqembowKydxo
 
 {
   "streetAddress": "Gedimino pr. 9",
@@ -68,6 +73,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsI
   "country": "Lithuania",
   "residenceType": "FLAT",
   "isPrimary": true,
+  "isSecondary": false,
   "active": true,
   "user": {
     "id": 1
@@ -75,9 +81,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsI
 }
 
 ### Create a new residence
-POST http://localhost:8080/api/residences
+POST http://localhost:8080/api/v1/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpYXQiOjE3NTMxNjI5MDAsImV4cCI6MTc1MzE2MjkzMH0.KQIHkEgrv0BnqJ5AARhc39rur8EjcTzCjFgrutlRVac
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0MTUzNiwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0MTgzNn0.rOV2Ar8jkHPARybTqCIAna56CVMtbWn9x4ZYnoqNNJc
 
 {
   "streetAddress": "Antakalnio g. 12",
@@ -87,6 +93,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpY
   "country": "Lithuania",
   "residenceType": "HOUSE",
   "isPrimary": false,
+  "isSecondary": true,
   "active": true,
   "user": {
     "id": 2
@@ -94,9 +101,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eUBnbWFpbC5jb20iLCJpY
 }
 
 ### Create a new bill
-POST http://localhost:8080/api/bills
+POST http://localhost:8080/api/v1/bills
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjA2NywiZXhwIjoxNzUzMjYyMzY3fQ.NyohHdPkvl5AjHwkZTavyagrOnDZGe1V-uEPqFD-lP4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2NzkyNSwidXNlcklkIjozLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMyNjgyMjV9.k2J_IiLqdBs_VBxNlBBeGRYVvQJY5uq7HZfadPmU7Zg
 
 {
   "name": "DTEK",
@@ -108,18 +115,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhd
 }
 
 ### Pay the bill
-POST http://localhost:8080/api/payments/process
+POST http://localhost:8080/api/v1/payments/process
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjEwMywiZXhwIjoxNzUzMjYyNDAzfQ.Z4xTwoy7IPzcVHqy85f0XCsAhaMGmDgwmLJOixSHRiQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2ODE0MSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI2ODQ0MX0.zaKyzmlE57HE6fjZxrW0VDUq4-COpLlEl9X3egehWD0
 
 {
-  "billId": 6,
-  "userId": 2,
+  "billId": 1,
+  "userId": 4,
   "amount": 120.00,
   "provider": "PAYPAL",
   "methodToken": "demo-mock-token-abc"
 }
 
 ### Check bill status
-GET http://localhost:8080/api/bills/6
+GET http://localhost:8080/api/v1/bills/6
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI2MjI2NywiZXhwIjoxNzUzMjYyNTY3fQ.Px8BGMM5zJKMyGLSLqoi4JPg82fWWVVYFttT0Aoujj4
+
+### Set Primary residence
+PUT http://localhost:8080/api/v1/residences/1/set-primary
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM0OTM4OSwidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM0OTY4OX0.u5-hlA5m9fq_f0jUT7XtBL-hBqduY-HqskDBG-kyNTY

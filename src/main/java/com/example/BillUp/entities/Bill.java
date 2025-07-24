@@ -87,7 +87,7 @@ public class Bill {
             if (dueDate != null) {
                 long daysLeft = LocalDate.now().until(dueDate).getDays();
 
-                if (daysLeft < 0 || daysLeft <= 3) {
+                if (daysLeft <= 3) {
                     priority = BillPriority.HIGH;
                 } else if (daysLeft <= 7) {
                     priority = BillPriority.MEDIUM;

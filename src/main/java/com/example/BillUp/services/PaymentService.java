@@ -61,6 +61,9 @@ public class PaymentService {
                 .bill(bill)
                 .build();
 
+        payment.setBill(bill);
+        bill.getPayments().add(payment);
+
         paymentRepository.save(payment);
         paymentRepository.flush();
 
@@ -89,6 +92,7 @@ public class PaymentService {
         return new PaymentResponse(
                 true,
                 "Transaction successful",
+
                 payment.getTransactionId(),
                 payment.getAmount(),
                 payment.getBill().getName(),

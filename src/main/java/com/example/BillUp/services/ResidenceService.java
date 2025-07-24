@@ -8,6 +8,7 @@ import com.example.BillUp.enumerators.ResidenceType;
 import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,23 @@ public class ResidenceService {
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
+   /* public List<ResidenceResponse> getAllResidences() {
+        return residenceRepository.findAll()
+                .stream()
+                .map(residence -> ResidenceResponse.builder()
+                        .id(residence.getId())
+                        .residenceType(residence.getResidenceType())
+                        .streetAddress(residence.getStreetAddress())
+                        .flatNumber(residence.getFlatNumber())
+                        .city(residence.getCity())
+                        .postalCode(residence.getPostalCode())
+                        .isPrimary(residence.isPrimary())
+                        .isActive(residence.isActive())
+                        .fullAddress(residence.getFullAddress())
+                        .build())
+                .toList();
+    }*/
 
     public ResidenceResponse registerResidence(String email, CreateResidenceRequest request) {
         User user = userRepository.findByEmail(email)
@@ -96,6 +114,16 @@ public class ResidenceService {
         residenceRepository.save(res);
     }
 
+   /* public void activateResidence(Long id, String username) {
+        Residence residence = residenceRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
+        if (!residence.getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("Unauthorized");
+        }
+        residence.setActive(true);
+        residenceRepository.save(residence);
+    }*/
+
     public void setPrimaryResidence(Long residenceId, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -108,6 +136,45 @@ public class ResidenceService {
 
         residenceRepository.saveAll(residences);
     }
+
+    @Transactional
+    public ResidenceResponse cloneResidence(Long sourceId, String email) {
+        Residence src = residenceRepository.findById(sourceId)
+                .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
+
+        User me = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // copy all the address fields
+        Residence copy = new Residence();
+        copy.setUser(me);
+        copy.setStreetAddress(src.getStreetAddress());
+        copy.setFlatNumber(src.getFlatNumber());
+        copy.setCity(src.getCity());
+        copy.setPostalCode(src.getPostalCode());
+        copy.setCountry(src.getCountry());
+        copy.setResidenceType(src.getResidenceType());
+        copy.setActive(src.isActive());
+        copy.setPrimary(true);               // or pull from request
+
+        // If you want this clone to be the one-and-only primary for the user:
+        List<Residence> mine = residenceRepository.findByUserId(me.getId());
+        mine.forEach(r -> r.setPrimary(false));
+        residenceRepository.saveAll(mine);
+
+        Residence saved = residenceRepository.save(copy);
+        return toDto(saved);
+    }
+
+   /* public void setSecondaryResidence(Long residenceId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        List<Residence> residences = residenceRepository.findByUserId(user.getId());
+
+        for (Residence residence : residences) {
+            residence.setSecondary(residence.getId().equals(residenceId));
+        }
+    }*/
 
     public List<ResidenceResponse> autocompleteAddress(String query) {
         return residenceRepository.searchByAddress(query)
