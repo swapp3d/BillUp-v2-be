@@ -101,7 +101,7 @@ public class AuthService {
                 .city(r.getCity())
                 .postalCode(r.getPostalCode())
                 .country(r.getCountry())
-                .residenceType(r.getResidenceType())
+                .residenceType(ResidenceType.valueOf(r.getResidenceType()))
                 .isPrimary(true)
                 .registrationDate(LocalDate.now())
                 .build();

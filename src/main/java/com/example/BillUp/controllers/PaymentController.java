@@ -3,6 +3,7 @@ package com.example.BillUp.controllers;
 import com.example.BillUp.dto.payment.PaymentRequest;
 import com.example.BillUp.dto.payment.PaymentResponse;
 import com.example.BillUp.services.PaymentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class PaymentController {
     }
 
     @PostMapping("/process")
-    public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest request) {
+    public ResponseEntity<PaymentResponse> processPayment(@Valid @RequestBody PaymentRequest request) {
         PaymentResponse response = paymentService.processPayment(request);
         return ResponseEntity.ok(response);
     }
