@@ -1,5 +1,6 @@
 package com.example.BillUp.dto.bill;
 
+import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -18,6 +19,9 @@ public class BillRequestDTO {
     @NotNull(message = "Due date is required")
     @FutureOrPresent(message = "Due date must be today or in the future")
     private LocalDate dueDate;
+
+    @NotNull(message = "Status is required")
+    private BillStatus status;
 
     @NotNull(message = "Bill type is required")
     private BillType type;

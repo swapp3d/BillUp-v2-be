@@ -103,7 +103,7 @@ public class PaymentService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!jwtService.isTokenValid(token, user)) {
+        if (!jwtService.validateToken(token, user).isValid()) {
             throw new RuntimeException("Token is invalid or revoked");
         }
 
