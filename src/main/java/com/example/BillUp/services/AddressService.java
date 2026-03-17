@@ -9,6 +9,8 @@ import java.util.Map;
 @Service
 public class AddressService {
 
+    //Mockup Address Suggestion in the absence of external API
+
     private final List<AddressSuggestion> mockSuggestions = List.of(
             buildSuggestion("Gedimino pr. 9-19, Vilnius, LT-01103, Lithuania",
                     "Gedimino pr. 9", "19", "Vilnius", "LT-01103", "Lithuania"),

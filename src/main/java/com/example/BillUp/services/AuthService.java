@@ -86,7 +86,6 @@ public class AuthService {
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .balance(0.0)
                 .build();
     }
 
@@ -161,9 +160,6 @@ public class AuthService {
                 tokenRepository.save(token);
             });
         }
-//        if (!tokens.isEmpty()) {
-//            throw new AlreadyLoggedInException("User is already logged in");
-//        }
 
         return user;
     }
@@ -204,7 +200,11 @@ public class AuthService {
             ));
 
             respondWithJson(response, HttpServletResponse.SC_OK,
-                    new LoginResponseDTO(newAccessToken, newRefreshToken));
+                    new LoginResponseDTO(
+                            newAccessToken,
+                            newRefreshToken,
+                            user.getRole().name()
+                    ));
 
         } catch (Exception e) {
             handleError(response, e);

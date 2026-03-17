@@ -2,6 +2,7 @@
 package com.example.BillUp.entities;
 
 import com.example.BillUp.enumerators.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
 public class User implements UserDetails {
 
     @Id
@@ -40,10 +45,11 @@ public class User implements UserDetails {
     @Column()
     private String surname; //handling in authService
 
-    //added residence
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Residence> residences = new ArrayList<>();
 
+    @Transient
     public String getPrimaryAddress() {
         return residences.stream()
                 .filter(Residence::isPrimary)
@@ -51,6 +57,9 @@ public class User implements UserDetails {
                 .map(Residence::getFullAddress)
                 .orElse("No primary residence");
     }
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @Column(nullable = false, unique = true)
     @Email(message = "Invalid email!")
@@ -61,8 +70,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String passwordHash;
-
-    private Double balance;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Company company;

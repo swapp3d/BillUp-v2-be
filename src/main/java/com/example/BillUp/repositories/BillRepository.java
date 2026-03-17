@@ -48,6 +48,15 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("SELECT b FROM Bill b LEFT JOIN FETCH b.payments WHERE b.id = :id")
     Optional<Bill> findByIdWithPayments(@Param("id") Long id);
 
+    @Query("SELECT b FROM Bill b")
+    List<Bill> findAllIncludingDeleted();
+
+    @Query("SELECT b FROM Bill b WHERE b.deleted = true")
+    List<Bill> findAllDeleted();
+
+    @Query(value = "SELECT * FROM bills WHERE id = :id", nativeQuery = true)
+    Optional<Bill> findByIdIncludingDeleted(@Param("id") Long id);
+
     List<Bill> findByUserIdAndStreetAddress(Long userId, String streetAddress);
 
     List<Bill> findByStreetAddressAndStatus(String streetAddress, BillStatus status);

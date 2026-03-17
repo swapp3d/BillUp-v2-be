@@ -1,0 +1,131 @@
+### CLIENT LOGIN
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "swap@gmail.com",
+  "password": "Swap1234_"
+}
+
+### COMPANY LOGIN
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dtek1@gmail.com",
+  "password": "Dtek1234_"
+}
+
+### ADMIN LOGIN
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin2@test.com",
+  "password": "Admin1234_"
+}
+
+
+### CREATE BILL (COMPANY)
+POST http://localhost:8080/api/v1/bills/residence/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrMUBnbWFpbC5jb20iLCJpYXQiOjE3NzM2NjE0NzEsInVzZXJJZCI6Nywicm9sZXMiOiJDT01QQU5ZIiwiZXhwIjoxNzczNjYxNzcxfQ.l0xkMbHhoRtXAzPJmrwJV4CFdk5CiqKJYXzLOcUHQMs
+Content-Type: application/json
+
+{
+  "name": "INTERNET Bill",
+  "amount": 11,
+  "dueDate": "2026-04-01",
+  "type": "INTERNET",
+  "status": "OPEN"
+}
+
+### ADMIN CREATE BILL
+POST http://localhost:8080/api/v1/bills/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbjJAdGVzdC5jb20iLCJpYXQiOjE3NzM2NjE2MjIsInVzZXJJZCI6MTEsInJvbGVzIjoiQURNSU4iLCJleHAiOjE3NzM2NjE5MjJ9.yUPwHg144stR0BXwj5xC5p4onZz3pcBT5hIAWG2ThNc
+Content-Type: application/json
+
+{
+  "companyId": 2,
+  "residenceId": 9,
+  "name": "Water Bill April",
+  "amount": 45.30,
+  "dueDate": "2026-04-05",
+  "type": "COLD_WATER"
+}
+
+### COMPANY UPDATE BILL
+PUT http://localhost:8080/api/v1/bills/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrMUBnbWFpbC5jb20iLCJpYXQiOjE3NzM2NjE4MjgsInVzZXJJZCI6Nywicm9sZXMiOiJDT01QQU5ZIiwiZXhwIjoxNzczNjYyMTI4fQ.gq5grBTd2LKoXqvMp4nnkAXC67bt-90PfpNie9331J4
+Content-Type: application/json
+
+{
+  "name": "Trolled XD2",
+  "dueDate": "2026-03-20",
+  "type": "COLD_WATER"
+}
+
+### ADMIN UPDATE BILL
+PUT http://localhost:8080/api/v1/bills/admin/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbjJAdGVzdC5jb20iLCJpYXQiOjE3NzM2NjIwMTYsInVzZXJJZCI6MTEsInJvbGVzIjoiQURNSU4iLCJleHAiOjE3NzM2NjIzMTZ9.44xiWG35h9ppVD9vXeEi984Q__R4LMjXwasmg5WI6lw
+Content-Type: application/json
+
+{
+  "name": "Electricity Bill Corrected",
+  "amount": 67.67,
+  "dueDate": "2026-04-20",
+  "type": "ELECTRICITY",
+  "status": "PAID"
+}
+
+### CLIENT GET MY BILLS
+GET http://localhost:8080/api/v1/bills/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### COMPANY GET MY BILLS
+GET http://localhost:8080/api/v1/bills/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrMUBnbWFpbC5jb20iLCJpYXQiOjE3NzI5OTc4ODIsInVzZXJJZCI6Nywicm9sZXMiOiJDT01QQU5ZIiwiZXhwIjoxNzcyOTk4MTgyfQ.qlSHDfMvyAw264VwMZPN60BTYesRuPTeDf2lzJq1qnI
+
+### ADMIN GET ALL BILLS
+GET http://localhost:8080/api/v1/bills
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbjJAdGVzdC5jb20iLCJpYXQiOjE3NzI5OTc5NDgsInVzZXJJZCI6MTEsInJvbGVzIjoiQURNSU4iLCJleHAiOjE3NzI5OTgyNDh9.61P_0AHEbOV2JjqrQ6kcxK6NfkYYOwwJ4_ESYb4zqlQ
+
+### FILTER BY STATUS
+GET http://localhost:8080/api/v1/bills/status/OPEN
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### FILTER BY PRIORITY
+GET http://localhost:8080/api/v1/bills/priority/HIGH
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### FILTER BY TYPE
+GET http://localhost:8080/api/v1/bills/type/ELECTRICITY
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### GET OVERDUE BILLS
+GET http://localhost:8080/api/v1/bills/overdue
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### GET BILLS DUE SOON
+GET http://localhost:8080/api/v1/bills/due-soon?days=7
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### FILTER BY ADDRESS
+GET http://localhost:8080/api/v1/bills/address/...
+Authorization: Bearer COMPANY_TOKEN
+
+### DELETE BILL
+DELETE http://localhost:8080/api/v1/bills/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbjJAdGVzdC5jb20iLCJpYXQiOjE3NzI5OTc5NDgsInVzZXJJZCI6MTEsInJvbGVzIjoiQURNSU4iLCJleHAiOjE3NzI5OTgyNDh9.61P_0AHEbOV2JjqrQ6kcxK6NfkYYOwwJ4_ESYb4zqlQ
+
+### RESTORE BILL
+PUT http://localhost:8080/api/v1/bills/3/restore
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbjJAdGVzdC5jb20iLCJpYXQiOjE3NzI5OTc5NDgsInVzZXJJZCI6MTEsInJvbGVzIjoiQURNSU4iLCJleHAiOjE3NzI5OTgyNDh9.61P_0AHEbOV2JjqrQ6kcxK6NfkYYOwwJ4_ESYb4zqlQ
+
+### TOTAL BILL AMOUNT
+GET http://localhost:8080/api/v1/bills/user/1/total-amount
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+
+### TOTAL UNPAID AMOUNT
+GET http://localhost:8080/api/v1/bills/user/6/unpaid-amount
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3Mjk5Nzc0NSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3Mjk5ODA0NX0.7Dk7kHh6lY9s7dhZQo9nWgw_abgZt92UZVvA0qPi1hg
+

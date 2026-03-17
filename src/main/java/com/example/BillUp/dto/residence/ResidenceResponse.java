@@ -1,6 +1,7 @@
 package com.example.BillUp.dto.residence;
 
 import com.example.BillUp.enumerators.ResidenceType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResidenceResponse {
     private Long id;
+    private Long userId;
     private String streetAddress;
     private String flatNumber;
     private String city;

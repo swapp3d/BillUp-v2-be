@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import java.time.LocalDate;
 
 import java.util.List;
@@ -18,7 +21,13 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "bills")
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE bills SET deleted = true WHERE id = ?")
 public class Bill {
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,9 +70,6 @@ public class Bill {
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
-    private List<Notification> notifications;
-
     @PrePersist
     public void onPrePersist() {
         if (issueDate == null) {
@@ -84,7 +90,7 @@ public class Bill {
 
         if (status == BillStatus.PAID || status == BillStatus.FAILED) {
             if (dueDate != null) {
-                long daysLeft = LocalDate.now().until(dueDate).getDays();
+                long daysLeft = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
 
                 if (daysLeft <= 3) {
                     priority = BillPriority.HIGH;
@@ -98,7 +104,7 @@ public class Bill {
         }
 
         if (dueDate != null) {
-            long daysLeft = LocalDate.now().until(dueDate).getDays();
+            long daysLeft = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
 
             if (daysLeft < 0) {
                 status = BillStatus.OVERDUE;

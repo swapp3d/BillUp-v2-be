@@ -1,7 +1,6 @@
 package com.example.BillUp.services;
 
-import com.example.BillUp.dto.residence.CreateResidenceRequest;
-import com.example.BillUp.dto.residence.ResidenceResponse;
+import com.example.BillUp.dto.residence.*;
 import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.ResidenceType;
@@ -33,121 +32,235 @@ public class ResidenceService {
         this.addressService = addressService;
     }
 
-    public List<ResidenceResponse> getUserResidences(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return residenceRepository.findByUserId(user.getId()).stream()
+    //Dashboard
+    public List<ResidenceResponse> getDashboardResidences(String street) {
+
+        List<Residence> residences;
+
+        if (street != null && !street.isBlank()) {
+            residences = residenceRepository
+                    .findByStreetAddressContainingIgnoreCase(street);
+        } else {
+            residences = residenceRepository.findAllByActiveTrue();
+        }
+
+        return residences.stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-   /* public List<ResidenceResponse> getAllResidences() {
-        return residenceRepository.findAll()
-                .stream()
-                .map(residence -> ResidenceResponse.builder()
-                        .id(residence.getId())
-                        .residenceType(residence.getResidenceType())
-                        .streetAddress(residence.getStreetAddress())
-                        .flatNumber(residence.getFlatNumber())
-                        .city(residence.getCity())
-                        .postalCode(residence.getPostalCode())
-                        .isPrimary(residence.isPrimary())
-                        .isActive(residence.isActive())
-                        .fullAddress(residence.getFullAddress())
-                        .build())
-                .toList();
-    }*/
 
-    public ResidenceResponse registerResidence(String email, CreateResidenceRequest request) {
+    public List<ResidenceResponse> getUserResidences(String email) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-       /* boolean isValid = addressService.validateAddress(
-                request.getStreetAddress(),
-                request.getFlatNumber() == null ? "" : request.getFlatNumber(),
-                request.getCity(),
-                request.getPostalCode(),
-                request.getCountry()
-        );
+        return residenceRepository.findByUserId(user.getId())
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
 
-        if (!isValid) {
-            throw new IllegalArgumentException("Provided address is invalid");
-        }
-        */
+    }
+
+    //Display All Residences of Client (ADMIN)
+    public List<ResidenceDropdown> getUserResidencesByUserId(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return residenceRepository.findByUserId(user.getId())
+                .stream()
+                .filter(res -> !res.isDeleted())
+                .map(res -> ResidenceDropdown.builder()
+                        .fullAddress(res.getFullAddress())
+                        .build())
+                .toList();
+    }
+
+
+    public ResidenceResponse registerResidence(String email, CreateResidenceRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         System.out.println("creating residence");
 
         Residence res = new Residence();
-        System.out.println("residence created");
+
         res.setUser(user);
-        System.out.println("user is set");
         res.setStreetAddress(request.getStreetAddress());
-        System.out.println("streetaddrees is set");
         res.setFlatNumber(request.getFlatNumber());
-        System.out.println("flatnumber isset");
         res.setCity(request.getCity());
-        System.out.println("city isset");
         res.setPostalCode(request.getPostalCode());
-        System.out.println("postal code isset");
         res.setCountry(request.getCountry());
-        System.out.println("country isset");
         res.setResidenceType(ResidenceType.valueOf(request.getResidenceType()));
-        System.out.println("type isset");
         res.setPrimary(request.isPrimary());
-        System.out.println("primary isset");
-        System.out.println("residence is created");
 
         Residence saved = residenceRepository.save(res);
-        System.out.println("saving the residence" + res);
+
         return toDto(saved);
+
     }
 
-    public void deactivateResidence(Long id, String username) {
+    //Create residence ADMIN
+
+    @Transactional
+    public ResidenceResponse adminCreateResidence(AdminCreateResidenceDTO request) {
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Residence res = new Residence();
+
+        res.setUser(user);
+        res.setStreetAddress(request.getStreetAddress());
+        res.setFlatNumber(request.getFlatNumber());
+        res.setCity(request.getCity());
+        res.setPostalCode(request.getPostalCode());
+        res.setCountry(request.getCountry());
+        res.setResidenceType(ResidenceType.valueOf(request.getResidenceType()));
+        res.setPrimary(request.isPrimary());
+
+        if (request.isPrimary()) {
+            unsetOtherPrimary(user.getId());
+        }
+
+        return toDto(residenceRepository.save(res));
+    }
+
+    //Updating Residence
+    @Transactional
+    public ResidenceResponse updateResidence(Long id, UpdateResidenceDTO dto, String email, boolean isAdmin) {
+
         Residence res = residenceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
 
-        if (!res.getUser().getUsername().equals(username)) {
+        if (!isAdmin && !res.getUser().getEmail().equals(email)) {
             throw new AccessDeniedException("Unauthorized");
         }
 
+        if (dto.getStreetAddress() != null) res.setStreetAddress(dto.getStreetAddress());
+        if (dto.getFlatNumber() != null) res.setFlatNumber(dto.getFlatNumber());
+        if (dto.getCity() != null) res.setCity(dto.getCity());
+        if (dto.getPostalCode() != null) res.setPostalCode(dto.getPostalCode());
+        if (dto.getCountry() != null) res.setCountry(dto.getCountry());
+
+        if (dto.getResidenceType() != null) {
+            res.setResidenceType(ResidenceType.valueOf(dto.getResidenceType()));
+        }
+
+        if (dto.getIsActive() != null) {
+            res.setActive(dto.getIsActive());
+        }
+
+        if (dto.getIsPrimary() != null && dto.getIsPrimary()) {
+            unsetOtherPrimary(res.getUser().getId());
+            res.setPrimary(true);
+        }
+
+        return toDto(residenceRepository.save(res));
+    }
+
+    //Delete (ADMIN)
+    @Transactional
+    public void deleteResidence(Long id) {
+
+        Residence res = residenceRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
+
+        res.setDeleted(true);
         res.setActive(false);
+
         residenceRepository.save(res);
     }
 
-   public void activateResidence(Long id, String username) {
-        Residence residence = residenceRepository.findById(id)
+    //Restore (ADMIN)
+    @Transactional
+    public ResidenceResponse restoreResidence(Long id) {
+
+        Residence res = residenceRepository.findByIdIncludingDeleted(id)
                 .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
-        if (!residence.getUser().getUsername().equals(username)) {
-            throw new AccessDeniedException("Unauthorized");
-        }
-        residence.setActive(true);
-        residenceRepository.save(residence);
+
+        res.setDeleted(false);
+        res.setActive(true);
+
+        return toDto(residenceRepository.save(res));
     }
 
+    //Helper to avoid double primary residences
+    private void unsetOtherPrimary(Long userId) {
+        List<Residence> residences = residenceRepository.findByUserId(userId);
+        residences.forEach(r -> r.setPrimary(false));
+        residenceRepository.saveAll(residences);
+    }
+
+    //Deactivation
+    public void deactivateResidence(Long id, String email) {
+
+        Residence res = residenceRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
+
+        if (!res.getUser().getEmail().equals(email)) {
+
+            throw new AccessDeniedException("Unauthorized");
+
+        }
+
+        res.setActive(false);
+
+        residenceRepository.save(res);
+
+    }
+
+    //Activation
+    public void activateResidence(Long id, String email) {
+
+        Residence residence = residenceRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
+
+        if (!residence.getUser().getEmail().equals(email)) {
+
+            throw new AccessDeniedException("Unauthorized");
+
+        }
+
+        residence.setActive(true);
+
+        residenceRepository.save(residence);
+
+    }
+
+    //Setting Primary
     public void setPrimaryResidence(Long residenceId, String email) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         List<Residence> residences = residenceRepository.findByUserId(user.getId());
 
         for (Residence residence : residences) {
+
             residence.setPrimary(residence.getId().equals(residenceId));
+
         }
 
         residenceRepository.saveAll(residences);
+
     }
+
 
     @Transactional
     public ResidenceResponse cloneResidence(Long sourceId, String email) {
+
         Residence src = residenceRepository.findById(sourceId)
                 .orElseThrow(() -> new EntityNotFoundException("Residence not found"));
 
         User me = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // copy all the address fields
         Residence copy = new Residence();
+
         copy.setUser(me);
         copy.setStreetAddress(src.getStreetAddress());
         copy.setFlatNumber(src.getFlatNumber());
@@ -156,36 +269,53 @@ public class ResidenceService {
         copy.setCountry(src.getCountry());
         copy.setResidenceType(src.getResidenceType());
         copy.setActive(src.isActive());
-        copy.setPrimary(true);               // or pull from request
+        copy.setPrimary(true);
 
-        // If you want this clone to be the one-and-only primary for the user:
         List<Residence> mine = residenceRepository.findByUserId(me.getId());
+
         mine.forEach(r -> r.setPrimary(false));
+
         residenceRepository.saveAll(mine);
 
         Residence saved = residenceRepository.save(copy);
+
         return toDto(saved);
+
     }
 
-   /* public void setSecondaryResidence(Long residenceId, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        List<Residence> residences = residenceRepository.findByUserId(user.getId());
-
-        for (Residence residence : residences) {
-            residence.setSecondary(residence.getId().equals(residenceId));
-        }
-    }*/
 
     public List<ResidenceResponse> autocompleteAddress(String query) {
+
         return residenceRepository.searchByAddress(query)
-                .stream().map(this::toDto).collect(Collectors.toList());
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+    }
+
+    public List<ResidenceResponse> getAllResidences() {
+
+        return residenceRepository.findAllByActiveTrue()
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    public List<ResidenceResponse> searchByStreet(String street) {
+
+        return residenceRepository
+                .findByStreetAddressContainingIgnoreCase(street)
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
     private ResidenceResponse toDto(Residence res) {
-        System.out.println("generating response");
+
         ResidenceResponse dto = new ResidenceResponse();
+
         dto.setId(res.getId());
+        dto.setUserId(res.getUser().getId());
         dto.setStreetAddress(res.getStreetAddress());
         dto.setFlatNumber(res.getFlatNumber());
         dto.setCity(res.getCity());
@@ -194,16 +324,19 @@ public class ResidenceService {
         dto.setResidenceType(res.getResidenceType());
         dto.setPrimary(res.isPrimary());
         dto.setActive(res.isActive());
-        System.out.println("response is set");
 
         String fullAddress = res.getStreetAddress();
+
         if (res.getFlatNumber() != null && !res.getFlatNumber().isEmpty()) {
+
             fullAddress += ", Apt " + res.getFlatNumber();
+
         }
+
         dto.setFullAddress(fullAddress);
-        System.out.println("full address is set");
 
         return dto;
-    }
-}
 
+    }
+
+}

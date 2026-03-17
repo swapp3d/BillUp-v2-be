@@ -1,6 +1,8 @@
 package com.example.BillUp.services;
 
 import com.example.BillUp.config.jwt.JwtService;
+import com.example.BillUp.dto.payment.AdminPaymentResponseDTO;
+import com.example.BillUp.dto.payment.AdminPaymentUpdateDTO;
 import com.example.BillUp.dto.payment.PaymentRequest;
 import com.example.BillUp.dto.payment.PaymentResponse;
 import com.example.BillUp.entities.Bill;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -33,7 +36,7 @@ public class PaymentService {
         Bill bill = billRepository.findById(billId)
                 .orElseThrow(() -> new RuntimeException("Bill not found"));
 
-        User user = userRepository.findById(Math.toIntExact(userId))
+        User user = userRepository.findById((long) Math.toIntExact(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!bill.getUser().getId().equals(userId)) {
@@ -110,5 +113,55 @@ public class PaymentService {
                 payment.getBill().getName(),
                 payment.getBill().getId()
         );
+    }
+
+    //GET ALL payments (ADMIN)
+    public List<AdminPaymentResponseDTO> getAllPayments() {
+        return paymentRepository.findAll()
+                .stream()
+                .map(p -> AdminPaymentResponseDTO.builder()
+                        .id(p.getId())
+                        .userId(p.getUser().getId())
+                        .billId(p.getBill().getId())
+                        .amount(p.getAmount())
+                        .timestamp(p.getTimestamp())
+                        .provider(p.getProvider())
+                        .success(p.isSuccess())
+                        .transactionId(p.getTransactionId())
+                        .build())
+                .toList();
+    }
+
+    //Editing Payment (ADMIN)
+    @Transactional
+    public AdminPaymentResponseDTO adminUpdatePayment(Long id, AdminPaymentUpdateDTO dto) {
+
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        if (dto.getSuccess() != null) {
+            payment.setSuccess(dto.getSuccess());
+        }
+
+        if (dto.getProvider() != null && !dto.getProvider().isBlank()) {
+            payment.setProvider(dto.getProvider());
+        }
+
+        if (dto.getTimestamp() != null) {
+            payment.setTimestamp(dto.getTimestamp());
+        }
+
+        paymentRepository.save(payment);
+
+        return AdminPaymentResponseDTO.builder()
+                .id(payment.getId())
+                .userId(payment.getUser().getId())
+                .billId(payment.getBill().getId())
+                .amount(payment.getAmount())
+                .timestamp(payment.getTimestamp())
+                .provider(payment.getProvider())
+                .success(payment.isSuccess())
+                .transactionId(payment.getTransactionId())
+                .build();
     }
 }

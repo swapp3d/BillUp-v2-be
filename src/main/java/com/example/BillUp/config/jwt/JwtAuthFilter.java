@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 @Component
@@ -63,11 +62,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             boolean isAccessValid = result.isValid();
             boolean isAccessRevoked = result.isRevoked();
             if (isAccessValid && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        Collections.emptyList()
-                );
+
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                user,
+                                null,
+                                user.getAuthorities()
+                        );
+
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else if (!isAccessValid && !isAccessRevoked) {

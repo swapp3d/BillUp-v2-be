@@ -52,6 +52,12 @@ public class AuthController {
                 .build();
 
         tokenRepository.save(refreshTokenEntity);
-        return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken));
+        return ResponseEntity.ok(
+                new LoginResponseDTO(
+                        accessToken,
+                        refreshToken,
+                        user.getRole().name()
+                )
+        );
     }
 }

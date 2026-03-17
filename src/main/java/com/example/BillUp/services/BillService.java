@@ -1,11 +1,12 @@
 package com.example.BillUp.services;
 
+import com.example.BillUp.dto.bill.AdminBillCreateDTO;
+import com.example.BillUp.dto.bill.AdminBillUpdateDTO;
 import com.example.BillUp.dto.bill.BillRequestDTO;
 import com.example.BillUp.entities.Bill;
 import com.example.BillUp.entities.Company;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.entities.Residence;
-import com.example.BillUp.entities.Payment;
 import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillType;
@@ -15,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,15 +27,23 @@ public class BillService {
     private final ResidenceRepository residenceRepository;
     private final PaymentService paymentService;
 
+    private boolean isOwnerOrAdmin(Bill bill, User user) {
+
+        if (user.getRole().name().equals("ADMIN")) {
+            return true;
+        }
+
+        return bill.getCompany().getUser().getId().equals(user.getId());
+    }
+
     @Transactional
-    public Bill createBill(BillRequestDTO dto) {
-        Company company = companyRepository.findById(Math.toIntExact(dto.getCompanyId()))
+    public Bill createBill(Long residenceId, BillRequestDTO dto, User currentUser) {
+
+        Company company = companyRepository.findByUser(currentUser)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
-        Residence residence = residenceRepository.findById(dto.getResidenceId())
+        Residence residence = residenceRepository.findById(residenceId)
                 .orElseThrow(() -> new RuntimeException("Residence not found"));
-
-        User user = residence.getUser();
 
         Bill bill = Bill.builder()
                 .name(dto.getName())
@@ -44,29 +51,56 @@ public class BillService {
                 .dueDate(dto.getDueDate())
                 .type(dto.getType())
                 .company(company)
-                .user(user)
+                .user(residence.getUser())
                 .streetAddress(residence.getStreetAddress())
-                .issueDate(LocalDate.now())
-                .status(BillStatus.OPEN)
                 .build();
 
         return billRepository.save(bill);
     }
 
+    @Transactional
+    public Bill adminCreateBill(AdminBillCreateDTO dto) {
+
+        Company company = companyRepository.findById(dto.getCompanyId())
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        Residence residence = residenceRepository.findById(dto.getResidenceId())
+                .orElseThrow(() -> new RuntimeException("Residence not found"));
+
+        Bill bill = Bill.builder()
+                .name(dto.getName())
+                .amount(dto.getAmount())
+                .dueDate(dto.getDueDate())
+                .type(dto.getType())
+                .company(company)
+                .user(residence.getUser())
+                .streetAddress(residence.getStreetAddress())
+                .build();
+
+        return billRepository.save(bill);
+    }
+
+    public List<Bill> getMyBills(User currentUser) {
+
+        if (currentUser.getRole().name().equals("ADMIN")) {
+            return billRepository.findAll();
+        }
+
+        if (currentUser.getRole().name().equals("CLIENT")) {
+            return billRepository.findByUserId(currentUser.getId());
+        }
+
+        Company company = companyRepository.findByUser(currentUser)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        return billRepository.findByCompanyId(company.getId());
+    }
+
+
+
+
     public List<Bill> getAllBills() {
         return billRepository.findAll();
-    }
-
-    public Optional<Bill> getBillById(Long id) {
-        return billRepository.findById(id);
-    }
-
-    public List<Bill> getBillsByUserId(Long userId) {
-        return billRepository.findByUserId(userId);
-    }
-
-    public List<Bill> getBillsByCompanyId(Long companyId) {
-        return billRepository.findByCompanyId(companyId);
     }
 
     public List<Bill> getBillsByStatus(BillStatus status) {
@@ -91,33 +125,92 @@ public class BillService {
     }
 
     @Transactional
-    public Bill updateBill(Long id, BillRequestDTO dto) {
+    public Bill updateBill(Long id, BillRequestDTO dto, User currentUser) {
+
         Bill bill = billRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bill not found"));
 
-        if (dto.getName() != null) bill.setName(dto.getName());
-        if (dto.getAmount() != null) bill.setAmount(dto.getAmount());
-        if (dto.getDueDate() != null) bill.setDueDate(dto.getDueDate());
-        if (dto.getType() != null) bill.setType(dto.getType());
+        if (!isOwnerOrAdmin(bill, currentUser)) {
+            throw new RuntimeException("Access denied");
+        }
 
+        if (dto.getName() != null) {
+            bill.setName(dto.getName());
+        }
 
+        if (dto.getType() != null) {
+            bill.setType(dto.getType());
+        }
+
+        if (dto.getDueDate() != null) {
+            bill.setDueDate(dto.getDueDate());
+        }
 
         return billRepository.save(bill);
     }
 
     @Transactional
-    public void deleteBill(Long id) {
-        if (!billRepository.existsById(id)) {
-            throw new RuntimeException("Bill not found");
+    public Bill adminUpdateBill(Long id, AdminBillUpdateDTO dto, User currentUser) {
+
+        if (!currentUser.getRole().name().equals("ADMIN")) {
+            throw new RuntimeException("Only admin can update bill with extended permissions");
         }
+
+        Bill bill = billRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        if (dto.getName() != null) {
+            bill.setName(dto.getName());
+        }
+
+        if (dto.getType() != null) {
+            bill.setType(dto.getType());
+        }
+
+        if (dto.getAmount() != null) {
+            bill.setAmount(dto.getAmount());
+        }
+
+        if (dto.getDueDate() != null) {
+            bill.setDueDate(dto.getDueDate());
+        }
+
+        if (dto.getStatus() != null) {
+
+            if (dto.getStatus() == BillStatus.PAID || dto.getStatus() == BillStatus.FAILED) {
+                bill.setStatus(dto.getStatus());
+            } else {
+                throw new RuntimeException("Status can only be manually set to PAID or FAILED");
+            }
+
+        }
+
+        return billRepository.save(bill);
+    }
+
+    @Transactional
+    public void deleteBill(Long id, User currentUser) {
+
+        Bill bill = billRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        if (!isOwnerOrAdmin(bill, currentUser)) {
+            throw new RuntimeException("Access denied");
+        }
+
         billRepository.deleteById(id);
     }
 
-
     @Transactional
-    public Payment payBill(Long billId, Long userId, Double amount, String provider, String methodToken) {
-        return paymentService.processBillPayment(billId, userId, amount, provider, methodToken);
+    public Bill restoreBill(Long id) {
+
+        Bill bill = billRepository.findByIdIncludingDeleted(id)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        bill.setDeleted(false);
+        return billRepository.save(bill);
     }
+
 
     @Transactional
     public void updateAllBillStatuses() {

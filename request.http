@@ -46,37 +46,44 @@ GET http://localhost:8080/api/v1/residences
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsImlhdCI6MTc1MzI3NTU1MywidXNlcklkIjo0LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzI3NTg1M30.rj_yPdCtPLbfI8NG5sHfb1wckLbX8fcYD0gGCcz4iMg
 
-###Login
+###Login COMPANY
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "dtek@gmail.com",
-  "password": "Qwerty12345!"
+  "email": "dtek1@gmail.com",
+  "password": "Dtek1234_"
 }
 
 
+###Login CLIENT
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
 
+{
+  "email": "swap@gmail.com",
+  "password": "Swap1234_"
+}
 
 
 
 ### Create a new residence
 POST http://localhost:8080/api/v1/residences
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlMTIzQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3MTUxNywidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM3MTgxN30.blnHJvqzmt5TunGAh5kYzVWqymnmfgfqWMpY4WxlSWU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrMUBnbWFpbC5jb20iLCJpYXQiOjE3NzI2MzI4NzEsInVzZXJJZCI6Nywicm9sZXMiOiJDT01QQU5ZIiwiZXhwIjoxNzcyNjMzMTcxfQ.yrZcimcsMQQsN5cyuovZM3vAT0g3yB412gaHzHi-FIs
 
 {
   "streetAddress": "Ulvidino g. 87",
-  "flatNumber": "10",
+  "flatNumber": "23",
   "city": "Vilnius",
   "postalCode": "LT-01107",
   "country": "Lithuania",
   "residenceType": "FLAT",
-  "isPrimary": true,
-  "user": {
-    "id": 1
-  }
+  "isPrimary": true
 }
+### CLIENT Get all res
+GET http://localhost:8080/api/v1/residences
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3MjYzMjk1MiwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3MjYzMzI1Mn0.PIJK4eu3hOV_Nh6BUDoH7W6RlxxGgWGDV-PHlesz738
 
 ### Create a new residence
 POST http://localhost:8080/api/v1/residences
@@ -99,43 +106,47 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXB0eW5vQGdtYWlsLmNvbSIsI
 }
 
 ### Create a new bill
-POST http://localhost:8080/api/v1/bills
+POST http://localhost:8080/api/v1/bills/residence/6
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrQGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3OTQwOCwidXNlcklkIjoyLCJyb2xlcyI6IkNPTVBBTlkiLCJleHAiOjE3NTMzNzk3MDh9.irU5Xs_9kkCn1xdO2f8yaG8QnHb7SbsQLL9wtpoc3_c
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrMUBnbWFpbC5jb20iLCJpYXQiOjE3NzI2MzE0MzIsInVzZXJJZCI6Nywicm9sZXMiOiJDT01QQU5ZIiwiZXhwIjoxNzcyNjMxNzMyfQ.Wr0-ynQ0vT9I0BjwhqLfGBTSnxj7ochxbDSzi22wL2o
 
 
 {
-  "name": "DTEK bill for 06.25",
+  "name": "DTEK bill for 01.26",
   "amount": 145.66,
-  "dueDate": "2025-07-30",
+  "dueDate": "2026-03-30",
   "type": "ELECTRICITY",
-  "status": "OPEN",
-  "companyId": 1,
-  "residenceId": 1
+  "status": "OPEN"
 }
+
+### COMPANY DELETE OWN BILL
+DELETE http://localhost:8080/api/v1/bills/11
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkdGVrMUBnbWFpbC5jb20iLCJpYXQiOjE3NzI2MzE2NTUsInVzZXJJZCI6Nywicm9sZXMiOiJDT01QQU5ZIiwiZXhwIjoxNzcyNjMxOTU1fQ.tjwgIJU5Zuv4gXEXlSxKWH84v-25Sy8YUMT-8aatlks
+
+### CLIENT DELETE BILL (FORBIDDEN)
+DELETE http://localhost:8080/api/v1/bills/11
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3MjYzMjE5NCwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3MjYzMjQ5NH0.Qjusc52yh7CyrlR4DsKAsOw3Pc5zgD1vJ-zhx7KdCek
+
+### CLIENT GET MY BILLS
+GET http://localhost:8080/api/v1/bills/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3MjYzMjM4NiwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3MjYzMjY4Nn0.oNa41ozlcEC07RTozLDUAjum6YuiajfAgijB1Ylu9Oo
 
 
 ### Pay the bill
-POST http://localhost:8080/api/v1/payments/process
+POST http://localhost:8080/api/v1/payment/pay
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3NzQzMiwidXNlcklkIjoxLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM3NzczMn0.VCHt0IaQpx3bcVyOXNGtor51mME3esxA1CAxTLa-O94
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3MjYzNjM0OSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3MjYzNjY0OX0.rHdevc6VF8L6u1RUoaOvy93gezFGK6NPwiZr_UtZd8M
 
 {
-  "billId": 1,
+  "billId": 3,
+  "amount": 18.59,
+  "provider": "PAYPAL",
+  "methodToken": "demo-mock-token-abc",
   "userId": 1
 }
-
-### Pay the bill (demo authentication)
-POST http://localhost:8080/api/v1/payments/pay
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTc1MzM3OTE1MiwidXNlcklkIjoxLCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc1MzM3OTQ1Mn0.El5L8lGBBCnlzH_UyO6-LcCQ8CW-CSY7GwwkhmySTy4
-
-{
-  "billId": 1,
-  "amount": 120.00,
-  "provider": "PAYPAL",
-  "methodToken": "demo-mock-token-abc"
-}
+### Pay the bill 2
+POST http://localhost:8080/api/v1/bills/3/pay?amount=145.66&provider=PAYPAL&methodToken=test
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2FwQGdtYWlsLmNvbSIsImlhdCI6MTc3MjYzMzg4MSwidXNlcklkIjo2LCJyb2xlcyI6IkNMSUVOVCIsImV4cCI6MTc3MjYzNDE4MX0.v2cXbHr_EtszzCCGN1JmFJo7TlLg9NEcssZlJ-SqgbY
 
 ### Check bill status
 

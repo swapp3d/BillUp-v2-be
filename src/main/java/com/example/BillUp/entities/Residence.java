@@ -1,8 +1,12 @@
 package com.example.BillUp.entities;
 
 import com.example.BillUp.enumerators.ResidenceType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 
@@ -13,6 +17,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE residences SET deleted = true WHERE id = ?")
 public class Residence {
 
     @Id
@@ -20,6 +26,10 @@ public class Residence {
     @Column(name = "id")
     private Long id;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -45,9 +55,6 @@ public class Residence {
 
     @Column(name = "is_primary", nullable = false)
     private boolean isPrimary;
-
-   /* @Column(name = "is_secondary", nullable = true)
-    private boolean isSecondary;*/
 
     @Column(name = "is_active", nullable = false)
     private boolean active = true;

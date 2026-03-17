@@ -1,13 +1,19 @@
 package com.example.BillUp.dto.bill;
 
-import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 
 @Data
-public class BillRequestDTO {
+public class AdminBillCreateDTO {
+
+    @NotNull(message = "Company id is required")
+    private Long companyId;
+
+    @NotNull(message = "Residence id is required")
+    private Long residenceId;
 
     @NotBlank(message = "Bill name is required")
     private String name;
