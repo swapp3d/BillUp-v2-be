@@ -36,3 +36,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignore all HTTP Request files
+*.http
+*.rest
+
+# Ignore IntelliJ HTTP Client private environment variables (IMPORTANT)
+http-client.private.env.json
+
+# Ignore the generated cookies and responses folder
+.idea/httpRequests/
