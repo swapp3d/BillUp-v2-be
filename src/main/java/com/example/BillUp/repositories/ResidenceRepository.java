@@ -1,7 +1,6 @@
 package com.example.BillUp.repositories;
 
 import com.example.BillUp.entities.Residence;
-import com.example.BillUp.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +21,11 @@ public interface ResidenceRepository extends JpaRepository<Residence, Long> {
 
     @Query(value = "SELECT * FROM residences WHERE id = :id", nativeQuery = true)
     Optional<Residence> findByIdIncludingDeleted(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM residences WHERE user_id = :userId", nativeQuery = true)
+    List<Residence> findByUserIdIncludingDeleted(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM residences WHERE user_id = :userId AND is_primary = true LIMIT 1", nativeQuery = true)
+    Optional<Residence> findPrimaryByUserIdIncludingDeleted(@Param("userId") Long userId);
 
 }

@@ -1,6 +1,5 @@
 package com.example.BillUp.dto.bill;
 
-import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
 import jakarta.validation.constraints.*;
 import lombok.Data;

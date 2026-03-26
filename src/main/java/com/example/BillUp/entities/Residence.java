@@ -2,7 +2,6 @@ package com.example.BillUp.entities;
 
 import com.example.BillUp.enumerators.ResidenceType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -11,16 +10,19 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "residences")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@ToString(exclude = "user")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "residences")
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE residences SET deleted = true WHERE id = ?")
 public class Residence {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -51,7 +53,7 @@ public class Residence {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "residence_type", nullable = false, length = 50)
-    private ResidenceType residenceType; // "house" or "flat"
+    private ResidenceType residenceType;
 
     @Column(name = "is_primary", nullable = false)
     private boolean isPrimary;

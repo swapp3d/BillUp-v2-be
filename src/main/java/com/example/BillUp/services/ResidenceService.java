@@ -66,13 +66,13 @@ public class ResidenceService {
     //Display All Residences of Client (ADMIN)
     public List<ResidenceDropdown> getUserResidencesByUserId(Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByIdIncludingDeleted(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        return residenceRepository.findByUserId(user.getId())
+        return residenceRepository.findByUserIdIncludingDeleted(user.getId())
                 .stream()
-                .filter(res -> !res.isDeleted())
                 .map(res -> ResidenceDropdown.builder()
+                        .id(res.getId())
                         .fullAddress(res.getFullAddress())
                         .build())
                 .toList();

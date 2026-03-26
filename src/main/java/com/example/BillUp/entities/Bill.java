@@ -4,22 +4,21 @@ import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
-
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@ToString(exclude = {"payments", "company", "user"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "bills")
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE bills SET deleted = true WHERE id = ?")
@@ -28,6 +27,7 @@ public class Bill {
     @Column(nullable = false)
     private boolean deleted = false;
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -87,11 +87,9 @@ public class Bill {
     }
 
     public void updatePriorityAndStatus() {
-
         if (status == BillStatus.PAID || status == BillStatus.FAILED) {
             if (dueDate != null) {
                 long daysLeft = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
-
                 if (daysLeft <= 3) {
                     priority = BillPriority.HIGH;
                 } else if (daysLeft <= 7) {

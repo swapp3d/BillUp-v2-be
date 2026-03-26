@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ResidenceDropdown {
+    private Long id;
     private String fullAddress;
 }

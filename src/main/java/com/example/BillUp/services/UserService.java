@@ -4,10 +4,12 @@ import com.example.BillUp.dto.user.CreateUserRequestDTO;
 import com.example.BillUp.dto.user.CreateUserResponseDTO;
 import com.example.BillUp.dto.user.UpdateUserRequestDTO;
 import com.example.BillUp.dto.user.UserResponseDTO;
+import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.Role;
 import com.example.BillUp.exceptions.EmailAlreadyExistsException;
 import com.example.BillUp.exceptions.PhoneNumberAlreadyExistsException;
+import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +27,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+
+    private final ResidenceRepository residenceRepository;
 
     /* GET Users*/
     public List<UserResponseDTO> getAllUsers(User currentUser) {
@@ -100,6 +104,12 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setDeleted(false);
+
+        // Restore all residences that were soft-deleted along with the user
+        List<Residence> residences = residenceRepository.findByUserIdIncludingDeleted(id);
+        residences.forEach(r -> r.setDeleted(false));
+        residenceRepository.saveAll(residences);
+
         return userRepository.save(user);
     }
 
@@ -244,6 +254,10 @@ public class UserService {
     }
 
     public UserResponseDTO mapToResponse(User user) {
+        String primaryAddress = residenceRepository
+                .findPrimaryByUserIdIncludingDeleted(user.getId())
+                .map(Residence::getFullAddress)
+                .orElse("No primary residence");
 
         return UserResponseDTO.builder()
                 .id(user.getId())
@@ -252,7 +266,7 @@ public class UserService {
                 .surname(user.getSurname())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .primaryAddress(user.getPrimaryAddress())
+                .primaryAddress(primaryAddress)
                 .deleted(user.isDeleted())
                 .build();
     }

@@ -1,21 +1,22 @@
 package com.example.BillUp.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"user", "bill"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "payments")
 public class Payment {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,4 +47,3 @@ public class Payment {
     @JoinColumn(name = "bill_id")
     private Bill bill;
 }
-
