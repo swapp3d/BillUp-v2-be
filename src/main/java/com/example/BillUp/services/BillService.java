@@ -83,7 +83,7 @@ public class BillService {
     public List<Bill> getMyBills(User currentUser) {
 
         if (currentUser.getRole().name().equals("ADMIN")) {
-            return billRepository.findAll();
+            return billRepository.findAllIncludingDeleted();
         }
 
         if (currentUser.getRole().name().equals("CLIENT")) {
@@ -100,7 +100,7 @@ public class BillService {
 
 
     public List<Bill> getAllBills() {
-        return billRepository.findAll();
+        return billRepository.findAllIncludingDeleted();
     }
 
     public List<Bill> getBillsByStatus(BillStatus status) {

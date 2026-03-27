@@ -209,11 +209,14 @@ public class BillController {
         dto.setAmount(bill.getAmount());
         dto.setDueDate(bill.getDueDate());
         dto.setIssueDate(bill.getIssueDate());
-        dto.setCompanyName(bill.getCompany().getName());
-        dto.setUserName(bill.getUser().getName() + " " + bill.getUser().getSurname());
+        dto.setCompanyName(bill.getCompany() != null ? bill.getCompany().getName() : null);
+        dto.setUserName(bill.getUser() != null
+                ? bill.getUser().getName() + " " + bill.getUser().getSurname()
+                : null);
         dto.setStreetAddress(bill.getStreetAddress());
         dto.setTotalPaid(bill.getTotalPaid());
         dto.setRemainingAmount(bill.getRemainingAmount());
+        dto.setDeleted(bill.isDeleted());
         return dto;
     }
 }

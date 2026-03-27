@@ -26,4 +26,5 @@ public class BillResponseDTO {
     private String streetAddress;
     private Double totalPaid;
     private Double remainingAmount;
+    private boolean deleted;
 }
