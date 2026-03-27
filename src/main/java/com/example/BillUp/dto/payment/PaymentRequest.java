@@ -1,9 +1,13 @@
 package com.example.BillUp.dto.payment;
 
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PaymentRequest {
 
     @NotNull(message = "Bill ID is required")

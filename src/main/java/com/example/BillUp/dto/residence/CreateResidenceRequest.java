@@ -1,9 +1,13 @@
 package com.example.BillUp.dto.residence;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateResidenceRequest {
     @NotBlank(message = "street address is required")
     private String streetAddress;

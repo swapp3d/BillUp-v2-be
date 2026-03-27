@@ -1,9 +1,13 @@
 package com.example.BillUp.dto.user;
 
 import com.example.BillUp.enumerators.Role;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UpdateUserRequestDTO {
 
     private String name;

@@ -1,11 +1,9 @@
 package com.example.BillUp.dto.payment;
+import lombok.*;
 
-import com.example.BillUp.enumerators.BillStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
+@Getter
 @AllArgsConstructor
+@Builder
 public class PaymentResponse {
     private boolean success;
     private String message;

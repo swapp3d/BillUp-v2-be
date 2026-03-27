@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "user")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "tokens")
 public class Token {
 

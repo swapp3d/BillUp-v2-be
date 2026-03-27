@@ -3,12 +3,10 @@ package com.example.BillUp.dto.authentication;
 
 import com.example.BillUp.dto.residence.ResidenceResponse;
 import com.example.BillUp.enumerators.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

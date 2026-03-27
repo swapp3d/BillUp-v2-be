@@ -3,11 +3,11 @@ package com.example.BillUp.dto.user;
 import com.example.BillUp.enumerators.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@Builder
+@Getter
 @AllArgsConstructor
+@Builder
 public class UserResponseDTO {
 
     private Long id;

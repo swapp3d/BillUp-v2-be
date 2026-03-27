@@ -1,8 +1,12 @@
 package com.example.BillUp.dto.residence;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UpdateResidenceDTO {
 
     private String streetAddress;

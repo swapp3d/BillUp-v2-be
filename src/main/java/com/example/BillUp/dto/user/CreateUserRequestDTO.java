@@ -2,9 +2,13 @@ package com.example.BillUp.dto.user;
 
 import com.example.BillUp.enumerators.Role;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateUserRequestDTO {
 
     @NotNull(message = "Role is required")

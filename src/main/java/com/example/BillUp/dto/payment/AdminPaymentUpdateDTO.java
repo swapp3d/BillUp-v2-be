@@ -1,10 +1,14 @@
 package com.example.BillUp.dto.payment;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AdminPaymentUpdateDTO {
 
     private Boolean success;

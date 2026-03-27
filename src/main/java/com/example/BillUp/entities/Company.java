@@ -12,8 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"bills", "user"})
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "companies")
 public class Company {
 

@@ -1,10 +1,14 @@
 package com.example.BillUp.dto.residence;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AddressSuggestion {
     private String display_name;
     private Map<String, String> address;

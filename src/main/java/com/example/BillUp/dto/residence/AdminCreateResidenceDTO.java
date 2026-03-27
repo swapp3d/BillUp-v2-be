@@ -1,9 +1,13 @@
 package com.example.BillUp.dto.residence;
 
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AdminCreateResidenceDTO {
 
     @NotNull(message = "User ID is required")

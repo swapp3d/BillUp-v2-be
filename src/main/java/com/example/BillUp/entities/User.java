@@ -21,8 +21,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"residences", "company"})
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "users")
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")

@@ -4,11 +4,15 @@ import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AdminBillUpdateDTO {
 
     private String name;

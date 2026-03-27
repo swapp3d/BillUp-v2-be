@@ -2,10 +2,15 @@ package com.example.BillUp.dto.bill;
 
 import com.example.BillUp.enumerators.BillType;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BillRequestDTO {
 
     @NotBlank(message = "Bill name is required")

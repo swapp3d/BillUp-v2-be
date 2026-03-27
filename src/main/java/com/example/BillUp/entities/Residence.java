@@ -15,8 +15,6 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "user")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "residences")
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE residences SET deleted = true WHERE id = ?")

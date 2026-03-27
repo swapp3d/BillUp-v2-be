@@ -3,11 +3,15 @@ package com.example.BillUp.dto.bill;
 import com.example.BillUp.enumerators.BillPriority;
 import com.example.BillUp.enumerators.BillStatus;
 import com.example.BillUp.enumerators.BillType;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BillResponseDTO {
     private Long id;
     private String name;

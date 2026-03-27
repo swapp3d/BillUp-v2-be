@@ -1,11 +1,11 @@
 package com.example.BillUp.dto.payment;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Builder
 public class AdminPaymentResponseDTO {
 
