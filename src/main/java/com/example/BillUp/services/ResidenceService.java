@@ -32,6 +32,19 @@ public class ResidenceService {
         this.addressService = addressService;
     }
 
+//    //Admin Tableview
+//    public List<ResidenceResponse> findAllIncludingDeleted() {
+//        return residenceRepository.findAllIncludingDeleted()
+//                .stream().map(this::toDto).toList();
+//    }
+
+    public List<ResidenceResponse> getAllResidences() {
+
+        return residenceRepository.findAllIncludingDeleted()
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
 
     //Dashboard
     public List<ResidenceResponse> getDashboardResidences(String street) {
@@ -293,14 +306,6 @@ public class ResidenceService {
 
     }
 
-    public List<ResidenceResponse> getAllResidences() {
-
-        return residenceRepository.findAllByActiveTrue()
-                .stream()
-                .map(this::toDto)
-                .toList();
-    }
-
     public List<ResidenceResponse> searchByStreet(String street) {
 
         return residenceRepository
@@ -324,6 +329,7 @@ public class ResidenceService {
         dto.setResidenceType(res.getResidenceType());
         dto.setPrimary(res.isPrimary());
         dto.setActive(res.isActive());
+        dto.setDeleted(res.isDeleted());
 
         String fullAddress = res.getStreetAddress();
 

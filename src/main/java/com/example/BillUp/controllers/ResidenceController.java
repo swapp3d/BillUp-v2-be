@@ -37,6 +37,13 @@ public class ResidenceController {
         );
     }
 
+    //Admin getting all residences (including deleted)
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<ResidenceResponse>> getAllResidences() {
+        return ResponseEntity.ok(residenceService.getAllResidences());
+    }
+
     //Residence Display (CLIENT)
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping

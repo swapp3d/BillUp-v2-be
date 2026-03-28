@@ -1,5 +1,6 @@
 package com.example.BillUp.repositories;
 
+import com.example.BillUp.entities.Bill;
 import com.example.BillUp.entities.Residence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,9 @@ public interface ResidenceRepository extends JpaRepository<Residence, Long> {
 
     @Query("SELECT r FROM Residence r WHERE r.active = true AND LOWER(r.streetAddress) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Residence> searchByAddress(@Param("query") String query);
+
+    @Query(value = "SELECT * FROM residences", nativeQuery = true)
+    List<Residence> findAllIncludingDeleted();
 
     @Query(value = "SELECT * FROM residences WHERE id = :id", nativeQuery = true)
     Optional<Residence> findByIdIncludingDeleted(@Param("id") Long id);

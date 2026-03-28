@@ -21,6 +21,7 @@ public class ResidenceResponse {
     private ResidenceType residenceType;
     private boolean isPrimary;
     private boolean isActive;
+    private boolean deleted;
     private String fullAddress;
 }
 
