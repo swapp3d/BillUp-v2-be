@@ -117,7 +117,7 @@ public class PaymentService {
 
     //GET ALL payments (ADMIN)
     public List<AdminPaymentResponseDTO> getAllPayments() {
-        return paymentRepository.findAll()
+        return paymentRepository.findAllIncludingDeleted()
                 .stream()
                 .map(p -> AdminPaymentResponseDTO.builder()
                         .id(p.getId())
@@ -128,6 +128,7 @@ public class PaymentService {
                         .provider(p.getProvider())
                         .success(p.isSuccess())
                         .transactionId(p.getTransactionId())
+                        .deleted(p.isDeleted())
                         .build())
                 .toList();
     }
@@ -163,5 +164,22 @@ public class PaymentService {
                 .success(payment.isSuccess())
                 .transactionId(payment.getTransactionId())
                 .build();
+    }
+
+    //Deleting Payment (ADMIN)
+    @Transactional
+    public void deletePayment(Long id) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        payment.setDeleted(true);
+        paymentRepository.save(payment);
+    }
+    //Restoring Payment (ADMIN)
+    @Transactional
+    public Payment restorePayment(Long id) {
+        Payment payment = paymentRepository.findByIdIncludingDeleted(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        payment.setDeleted(false);
+        return paymentRepository.save(payment);
     }
 }

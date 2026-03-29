@@ -17,4 +17,5 @@ public class AdminPaymentResponseDTO {
     private String provider;
     private boolean success;
     private String transactionId;
+    private boolean deleted;
 }

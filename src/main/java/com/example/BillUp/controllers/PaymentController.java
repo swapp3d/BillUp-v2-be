@@ -4,6 +4,7 @@ import com.example.BillUp.dto.payment.AdminPaymentResponseDTO;
 import com.example.BillUp.dto.payment.AdminPaymentUpdateDTO;
 import com.example.BillUp.dto.payment.PaymentRequest;
 import com.example.BillUp.dto.payment.PaymentResponse;
+import com.example.BillUp.entities.Payment;
 import com.example.BillUp.services.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +55,20 @@ public class PaymentController {
         return ResponseEntity.ok(
                 paymentService.adminUpdatePayment(id, dto)
         );
+    }
+
+    //Deleting Payments (ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+        paymentService.deletePayment(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    //Restoring Payments (ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Payment> restorePayment(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentService.restorePayment(id));
     }
 }

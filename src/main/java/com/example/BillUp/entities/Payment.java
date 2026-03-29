@@ -2,6 +2,8 @@ package com.example.BillUp.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE payments SET deleted = true WHERE id = ?")
 @Table(name = "payments")
 public class Payment {
 
@@ -36,6 +40,9 @@ public class Payment {
 
     @Column
     private String methodToken;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
