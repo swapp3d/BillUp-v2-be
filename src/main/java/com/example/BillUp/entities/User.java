@@ -66,7 +66,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String passwordHash;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user")
     private Company company;
 
     @Override

@@ -3,6 +3,8 @@ package com.example.BillUp.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "companies")
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE companies SET deleted = true WHERE id = ?")
 public class Company {
 
     @EqualsAndHashCode.Include
@@ -30,8 +34,11 @@ public class Company {
     @Column(nullable = false)
     private String companyNumber;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "user_id", nullable = true, unique = true)
     private User user;
 
     @OneToMany(mappedBy = "company")

@@ -33,11 +33,6 @@ public class ResidenceService {
     }
 
 //    //Admin Tableview
-//    public List<ResidenceResponse> findAllIncludingDeleted() {
-//        return residenceRepository.findAllIncludingDeleted()
-//                .stream().map(this::toDto).toList();
-//    }
-
     public List<ResidenceResponse> getAllResidences() {
 
         return residenceRepository.findAllIncludingDeleted()

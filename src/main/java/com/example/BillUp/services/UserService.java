@@ -4,11 +4,13 @@ import com.example.BillUp.dto.user.CreateUserRequestDTO;
 import com.example.BillUp.dto.user.CreateUserResponseDTO;
 import com.example.BillUp.dto.user.UpdateUserRequestDTO;
 import com.example.BillUp.dto.user.UserResponseDTO;
+import com.example.BillUp.entities.Company;
 import com.example.BillUp.entities.Residence;
 import com.example.BillUp.entities.User;
 import com.example.BillUp.enumerators.Role;
 import com.example.BillUp.exceptions.EmailAlreadyExistsException;
 import com.example.BillUp.exceptions.PhoneNumberAlreadyExistsException;
+import com.example.BillUp.repositories.CompanyRepository;
 import com.example.BillUp.repositories.ResidenceRepository;
 import com.example.BillUp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +27,11 @@ import java.util.List;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
-
     private final UserRepository userRepository;
-
     private final ResidenceRepository residenceRepository;
+    private final CompanyRepository companyRepository;
 
-    /* GET Users*/
+    //GET Users
     public List<UserResponseDTO> getAllUsers(User currentUser) {
 
         if (currentUser.getRole() != Role.ADMIN) {
@@ -73,27 +74,19 @@ public class UserService {
         return user;
     }
 
-    /* Deleting Users */
+    // Deleting Users
 
+    @Transactional
     public void deleteUser(Long id, User currentUser) {
-
-        //Admin can delete anyone
-        if (currentUser.getRole() == Role.ADMIN) {
-            userRepository.deleteById(id);
-            return;
+        if (currentUser.getRole() != Role.ADMIN && !currentUser.getId().equals(id)) {
+            throw new AccessDeniedException("Not allowed");
         }
-
-        //User can delete themselves (not implemented in FE yet)
-        if (currentUser.getId().equals(id)) {
-            userRepository.deleteById(id);
-            return;
-        }
-
-        throw new AccessDeniedException("Not allowed");
+        userRepository.findByIdIncludingDeleted(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.softDeleteById(id);
     }
 
-    /* Restoring Users (ADMIN)*/
-
+    //Restoring Users (ADMIN)
     public User restoreUser(Long id, User currentUser) {
 
         if (currentUser.getRole() != Role.ADMIN) {
@@ -113,7 +106,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    /* Creating Users (ADMIN)*/
+    //Creating Users (ADMIN)
 
     public CreateUserResponseDTO createUser(CreateUserRequestDTO request, User currentUser) {
 
@@ -126,8 +119,9 @@ public class UserService {
         checkIfUserExists(request);
 
         User user = buildUserEntity(request);
-
         User savedUser = userRepository.save(user);
+
+        maybeCreateCompany(request, savedUser);
 
         return CreateUserResponseDTO.builder()
                 .id(savedUser.getId())
@@ -138,6 +132,19 @@ public class UserService {
                 .phoneNumber(savedUser.getPhoneNumber())
                 .build();
 
+    }
+
+    private void maybeCreateCompany(CreateUserRequestDTO request, User user) {
+        if (request.getRole() != Role.COMPANY) return;
+
+        Company company = Company.builder()
+                .name(request.getName())
+                .companyEmail(request.getEmail())
+                .companyNumber(request.getPhoneNumber())
+                .user(user)
+                .build();
+
+        companyRepository.save(company);
     }
 
     private User buildUserEntity(CreateUserRequestDTO request) {
@@ -174,7 +181,7 @@ public class UserService {
             throw new IllegalArgumentException("Phone number is required");
         }
 
-        // CLIENT role requires surname
+        //CLIENT role requires surname
         if (request.getRole() == Role.CLIENT) {
             if (request.getSurname() == null || request.getSurname().isBlank()) {
                 throw new IllegalArgumentException("Surname is required for CLIENT role");
@@ -202,7 +209,7 @@ public class UserService {
     }
 
 
-    /* Editing Users (ADMIN)*/
+    //Editing Users (ADMIN)
 
     public UserResponseDTO updateUser(Long id,
                                       UpdateUserRequestDTO request,

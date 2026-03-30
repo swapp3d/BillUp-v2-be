@@ -1,10 +1,10 @@
 package com.example.BillUp.repositories;
 
-import com.example.BillUp.dto.user.UserResponseDTO;
 import com.example.BillUp.entities.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -28,6 +28,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT * FROM users WHERE id = :id", nativeQuery = true)
     Optional<User> findByIdIncludingDeleted(@Param("id") Long id);
+
+    @Modifying
+    @Query(value = "UPDATE users SET deleted = true WHERE id = :id", nativeQuery = true)
+    void softDeleteById(@Param("id") Long id);
 
 }
 

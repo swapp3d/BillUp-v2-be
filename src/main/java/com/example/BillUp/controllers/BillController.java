@@ -27,7 +27,7 @@ public class BillController {
 
     private final BillService billService;
 
-    /* CREATE BILL (COMPANY) */
+    //CREATE BILL (COMPANY)
     @PreAuthorize("hasRole('COMPANY')")
     @PostMapping("/residence/{residenceId}")
     public ResponseEntity<BillResponseDTO> createBill(
@@ -40,7 +40,7 @@ public class BillController {
         return ResponseEntity.ok(convert(created));
     }
 
-    /* CREATE BILL (ADMIN) */
+    //CREATE BILL (ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin")
     public ResponseEntity<BillResponseDTO> adminCreateBill(
@@ -51,7 +51,7 @@ public class BillController {
         return ResponseEntity.ok(convert(created));
     }
 
-    /* GET MY BILLS */
+    //GET MY BILLS
     @PreAuthorize("hasAnyRole('CLIENT','COMPANY','ADMIN')")
     @GetMapping("/my")
     public ResponseEntity<List<BillResponseDTO>> getMyBills(Authentication authentication) {
@@ -64,7 +64,7 @@ public class BillController {
         );
     }
 
-    /* ADMIN: GET ALL */
+    //ADMIN: GET ALL
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<BillResponseDTO>> getAllBills() {
@@ -76,7 +76,7 @@ public class BillController {
         );
     }
 
-    /* UPDATE BILL */
+    //UPDATE BILL
     @PreAuthorize("hasAnyRole('COMPANY','ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BillResponseDTO> updateBill(
@@ -90,7 +90,7 @@ public class BillController {
         return ResponseEntity.ok(convert(updated));
     }
 
-    /* UPDATE BILL ADMIN */
+    //UPDATE BILL ADMIN
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/{id}")
@@ -106,7 +106,7 @@ public class BillController {
         return ResponseEntity.ok(convert(updated));
     }
 
-    /* DELETE BILL (SOFT) */
+    //DELETE BILL (SOFT)
     @PreAuthorize("hasAnyRole('COMPANY','ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBill(
@@ -119,7 +119,7 @@ public class BillController {
         return ResponseEntity.noContent().build();
     }
 
-    /* RESTORE BILL (ADMIN) */
+    //RESTORE BILL (ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/restore")
     public ResponseEntity<BillResponseDTO> restoreBill(@PathVariable Long id) {
@@ -128,7 +128,7 @@ public class BillController {
         return ResponseEntity.ok(convert(restored));
     }
 
-    /* FILTERING */
+    //FILTERING
 
     @PreAuthorize("hasAnyRole('CLIENT','COMPANY','ADMIN')")
     @GetMapping("/status/{status}")
